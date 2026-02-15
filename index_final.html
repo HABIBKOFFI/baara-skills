@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAARA SKILLS — Forge ton métier. Prouve-le.</title>
+
+<!-- SEO -->
+<meta name="description" content="Plateforme EdTech africaine qui transforme la formation en expérience professionnelle via des simulations métiers certifiées. Phase pilote Côte d'Ivoire.">
+<meta name="keywords" content="formation professionnelle Afrique, emploi jeunes Côte d'Ivoire, EdTech africaine, simulation métier">
+<meta name="author" content="BAARA SKILLS">
+
+<!-- Open Graph -->
+<meta property="og:title" content="BAARA SKILLS — Forge ton métier. Prouve-le.">
+<meta property="og:description" content="De la formation à l'emploi : simulations métiers réelles co-créées avec des entreprises africaines.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://habibkoffi.github.io/baara-skills/">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* LIGHT MODE (default) */
+    --bg-primary: #F0EDE6;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #F8F7F4;
+    --text-primary: #0B0E1A;
+    --text-secondary: #4A4A4A;
+    --text-tertiary: #6B6B6B;
+    --or: #F5A623;
+    --or-vif: #FF8C00;
+    --or-sombre: #D68910;
+    --ligne: rgba(11,14,26,0.12);
+    --shadow: rgba(11,14,26,0.08);
+  }
+
+  [data-theme="dark"] {
+    /* DARK MODE */
+    --bg-primary: #0B0E1A;
+    --bg-secondary: #111627;
+    --bg-tertiary: #1A2035;
+    --text-primary: #F0EDE6;
+    --text-secondary: #B4B9CC;
+    --text-tertiary: #8A8FA8;
+    --ligne: rgba(245,166,35,0.15);
+    --shadow: rgba(0,0,0,0.3);
+  }
+
+  *, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+  }
+
+  html { 
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Archivo', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* ── GRAIN TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.25;
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-secondary);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--ligne);
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .logo {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    letter-spacing: 0.15em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo-symbol {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--or), var(--or-vif));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  @keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* Toggle Theme */
+  .theme-toggle {
+    width: 50px;
+    height: 26px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--ligne);
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .theme-toggle::before {
+    content: '☀️';
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+  }
+
+  .theme-toggle::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    background: var(--or);
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  [data-theme="dark"] .theme-toggle::before {
+    content: '🌙';
+    left: auto;
+    right: 2px;
+  }
+
+  [data-theme="dark"] .theme-toggle::after {
+    transform: translateX(24px);
+  }
+
+  /* Language Selector */
+  .lang-selector {
+    display: flex;
+    gap: 0.3rem;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--ligne);
+    border-radius: 4px;
+    padding: 0.3rem;
+  }
+
+  .lang-btn {
+    background: none;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .lang-btn.active {
+    background: var(--or);
+    color: #FFFFFF;
+  }
+
+  /* ── HERO SECTION ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(8rem, 15vh, 12rem) clamp(1.5rem, 5vw, 4rem) clamp(4rem, 8vh, 6rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    animation: slideInUp 0.8s ease both;
+  }
+
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    width: 48px;
+    height: 2px;
+    background: var(--or);
+  }
+
+  h1 {
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 6.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    animation: slideInUp 0.8s 0.1s ease both;
+  }
+
+  h1 .highlight {
+    color: var(--or);
+  }
+
+  .hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero-desc {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 2.5rem;
+    animation: slideInUp 0.8s 0.2s ease both;
+  }
+
+  @keyframes slideInUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(30px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  /* ── TABS ── */
+  .tabs-wrap {
+    margin-top: 2.5rem;
+    animation: slideInUp 0.8s 0.3s ease both;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--ligne);
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 1rem clamp(1.2rem, 3vw, 2rem);
+    position: relative;
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+
+  .tab-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--or);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .tab-btn.active {
+    color: var(--text-primary);
+  }
+
+  .tab-btn.active::after {
+    transform: scaleX(1);
+  }
+
+  .tab-panel {
+    display: none;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  /* ── FORM BLOCK ── */
+  .form-block {
+    background: var(--bg-secondary);
+    border: 1px solid var(--ligne);
+    padding: clamp(2rem, 4vw, 2.5rem);
+    max-width: 680px;
+    margin: 2rem auto 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  .form-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--or), var(--or-vif), transparent);
+  }
+
+  .form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+    letter-spacing: 0.15em;
+    color: var(--or);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+
+  .form-pitch {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  input[type="email"],
+  input[type="text"],
+  select {
+    flex: 1;
+    min-width: 200px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--ligne);
+    color: var(--text-primary);
+    font-family: 'Archivo', sans-serif;
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
+    padding: 0.9rem 1.2rem;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  input[type="email"]::placeholder,
+  input[type="text"]::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  input[type="email"]:focus,
+  input[type="text"]:focus,
+  select:focus {
+    border-color: var(--or);
+    box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+  }
+
+  .cta-btn {
+    background: linear-gradient(135deg, var(--or), var(--or-vif));
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.9rem clamp(1.5rem, 3vw, 2.5rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--or-vif), var(--or-sombre));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .cta-btn:hover::before {
+    opacity: 1;
+  }
+
+  .cta-btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-micro {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.65rem, 1.4vw, 0.72rem);
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
+
+  .success-msg {
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background: rgba(46, 204, 113, 0.1);
+    border-left: 3px solid #2ECC71;
+    display: none;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .success-msg.show {
+    display: flex;
+  }
+
+  .success-msg .check {
+    font-size: 1.5rem;
+    color: #2ECC71;
+  }
+
+  .success-msg p {
+    flex: 1;
+    color: var(--text-primary);
+    font-size: clamp(0.9rem, 1.6vw, 1rem);
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(2.5rem, 5vh, 4rem);
+    padding: clamp(1.5rem, 3vh, 2.5rem) 0 0;
+    border-top: 1px solid var(--ligne);
+    animation: slideInUp 0.8s 0.4s ease both;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    display: block;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--or);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    color: var(--text-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── PROOF BAND ── */
+  .proof-band {
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--ligne);
+    border-bottom: 1px solid var(--ligne);
+    padding: clamp(3rem, 6vh, 5rem) 0;
+  }
+
+  .proof-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.65rem, 1.4vw, 0.75rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--or);
+    text-align: center;
+    display: block;
+    margin-bottom: 2.5rem;
+  }
+
+  .proof-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .proof-stat {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--ligne);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+
+  .proof-stat:hover {
+    border-color: var(--or);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .proof-stat-num {
+    display: block;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--or);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .proof-stat-label {
+    font-size: clamp(0.9rem, 1.7vw, 1.05rem);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── SECTION STEPS ── */
+  .section-steps {
+    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-primary);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: clamp(4rem, 8vh, 6rem);
+  }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: clamp(2.5rem, 5vw, 4rem);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .step {
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--ligne);
+    transition: all 0.3s ease;
+  }
+
+  .step:hover {
+    border-color: var(--or);
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--or), var(--or-vif));
+    color: #FFFFFF;
+    font-weight: 900;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+  }
+
+  .step-title {
+    font-weight: 700;
+    font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .step-desc {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ── SECTION CONTEXT ── */
+  .section-context {
+    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-secondary);
+  }
+
+  .context-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .context-content h2 {
+    font-weight: 900;
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .context-content h2 .highlight {
+    color: var(--or);
+  }
+
+  .context-content p {
+    font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 1.8rem;
+  }
+
+  .context-content p strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .context-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .context-stat {
+    padding: 2rem 1.5rem;
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--or);
+  }
+
+  .context-stat-num {
+    display: block;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 3.2rem);
+    color: var(--or);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+
+  .context-stat-label {
+    font-size: clamp(0.9rem, 1.7vw, 1.05rem);
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* ── SECTION PILIERS ── */
+  .section-piliers {
+    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-primary);
+  }
+
+  .piliers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(2rem, 4vw, 3rem);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .pilier {
+    background: var(--bg-secondary);
+    border: 1px solid var(--ligne);
+    padding: clamp(2rem, 4vw, 2.5rem);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .pilier::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--or), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .pilier:hover {
+    border-color: var(--or);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .pilier:hover::before {
+    transform: scaleX(1);
+  }
+
+  .pilier-title {
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .pilier-desc {
+    font-size: clamp(0.9rem, 1.6vw, 1rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ── FAQ SECTION ── */
+  .faq-section {
+    padding: clamp(5rem, 10vh, 8rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-secondary);
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vh, 5rem);
+  }
+
+  .faq-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .faq-title {
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .faq-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .faq-item {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--ligne);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    transition: all 0.3s ease;
+  }
+
+  .faq-item:hover {
+    border-color: var(--or);
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  .faq-question {
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .faq-answer {
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .faq-answer strong {
+    color: var(--text-primary);
+  }
+
+  /* ── CTA BOTTOM ── */
+  .cta-bottom {
+    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-primary);
+    border-top: 1px solid var(--ligne);
+  }
+
+  .cta-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cta-content h2 {
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-content p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .cta-urgency {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.5rem;
+    background: rgba(245,166,35,0.1);
+    border: 1px solid var(--ligne);
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+    color: var(--or);
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--ligne);
+    padding: clamp(2.5rem, 5vh, 3.5rem) clamp(1.5rem, 5vw, 4rem);
+    background: var(--bg-tertiary);
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .footer-left {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .footer-left p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+    color: var(--text-tertiary);
+    margin-bottom: 1rem;
+  }
+
+  .footer-mission {
+    font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-odd {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .odd-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.65rem, 1.4vw, 0.7rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--or);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ligne);
+    background: rgba(245,166,35,0.05);
+    border-radius: 2px;
+  }
+
+  .footer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .ftag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.65rem, 1.4vw, 0.72rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--ligne);
+    border-radius: 2px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero {
+      padding-top: 7rem;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      width: 24px;
+    }
+
+    .input-row {
+      flex-direction: column;
+    }
+
+    .cta-btn {
+      width: 100%;
+    }
+
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="logo">
+    <div class="logo-symbol"></div>
+    <span data-i18n="nav-title">BAARA SKILLS</span>
+  </div>
+  
+  <div class="nav-controls">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></div>
+    <div class="lang-selector">
+      <button class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+      <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-wrapper">
+    <div class="hero-content">
+      <div class="hero-eyebrow" data-i18n="hero-eyebrow">De la formation à l'emploi</div>
+
+      <h1><span data-i18n="hero-title-1">Forge ton métier.</span> <span class="highlight" data-i18n="hero-title-2">Prouve-le.</span></h1>
+
+      <p class="hero-desc" data-i18n="hero-desc">
+        Des simulations professionnelles co-créées avec des entreprises. Des compétences certifiées. Un portfolio qui prouve ce que tu sais faire.
+      </p>
+
+      <!-- TABS -->
+      <div class="tabs-wrap">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('apprenant', this)" data-i18n="tab-student">Je suis apprenant</button>
+          <button class="tab-btn" onclick="switchTab('entreprise', this)" data-i18n="tab-company">Je suis entreprise</button>
+        </div>
+
+        <!-- Panel apprenant -->
+        <div class="tab-panel active" id="tab-apprenant">
+          <div class="form-block">
+            <span class="form-label" data-i18n="form-label-student">Liste d'attente · Gratuit</span>
+            <p class="form-pitch" data-i18n="form-pitch-student">Rejoins les 500 premiers apprenants en Côte d'Ivoire. Invitation par email dès l'ouverture.</p>
+            <div class="input-row">
+              <input type="email" id="email-apprenant" data-i18n-placeholder="form-placeholder" placeholder="ton.adresse@email.com">
+              <button class="cta-btn" onclick="handleSubmit('apprenant')"><span data-i18n="cta-join">Rejoindre</span></button>
+            </div>
+            <p class="form-micro" data-i18n="form-micro">Accès gratuit · Aucun spam · Désabonnement en 1 clic</p>
+            <div class="success-msg" id="success-apprenant">
+              <span class="check">✓</span>
+              <p data-i18n="success-student">Tu es sur la liste ! On te contacte bientôt. <strong>Merci.</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel entreprise -->
+        <div class="tab-panel" id="tab-entreprise">
+          <div class="form-block">
+            <span class="form-label" data-i18n="form-label-company">Devenir partenaire</span>
+            <p class="form-pitch" data-i18n="form-pitch-company">Co-créez une simulation avec vos experts. Accédez aux meilleurs profils avant le marché.</p>
+            <div class="input-row">
+              <input type="email" id="email-entreprise" data-i18n-placeholder="form-placeholder-company" placeholder="contact@votreentreprise.com">
+              <button class="cta-btn" onclick="handleSubmit('entreprise')"><span data-i18n="cta-apply">Candidater</span></button>
+            </div>
+            <p class="form-micro" data-i18n="form-micro-company">5 entreprises pilotes · Tech, Finance, RH, Logistique · Réponse sous 48h</p>
+            <div class="success-msg" id="success-entreprise">
+              <span class="check">✓</span>
+              <p data-i18n="success-company">Demande reçue ! Notre équipe vous contacte sous <strong>48h</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-num">500</span>
+          <span class="stat-label" data-i18n="stat-places">Places disponibles</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">5</span>
+          <span class="stat-label" data-i18n="stat-companies">Entreprises pilotes</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">0€</span>
+          <span class="stat-label" data-i18n="stat-free">Pour les apprenants</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF BAND -->
+<div class="proof-band">
+  <span class="proof-label" data-i18n="proof-label">Impact mesurable</span>
+  <div class="proof-stats">
+    <div class="proof-stat">
+      <span class="proof-stat-num">85%</span>
+      <span class="proof-stat-label" data-i18n="proof-stat-1">Objectif d'employabilité après certification</span>
+    </div>
+    <div class="proof-stat">
+      <span class="proof-stat-num">3–8h</span>
+      <span class="proof-stat-label" data-i18n="proof-stat-2">Expérience concrète par simulation</span>
+    </div>
+    <div class="proof-stat">
+      <span class="proof-stat-num">100%</span>
+      <span class="proof-stat-label" data-i18n="proof-stat-3">Certifications vérifiables par les recruteurs</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION STEPS -->
+<section class="section-steps">
+  <div class="section-header">
+    <div class="section-eyebrow" data-i18n="steps-eyebrow">Comment ça marche</div>
+    <h2 class="section-title" data-i18n="steps-title">De la formation à l'emploi en 3 étapes</h2>
+  </div>
+  
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3 class="step-title" data-i18n="step-1-title">Choisis ta simulation</h3>
+      <p class="step-desc" data-i18n="step-1-desc">Simulations créées avec des entreprises partenaires. Analyse de données, gestion RH, stratégie logistique.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3 class="step-title" data-i18n="step-2-title">Travaille et produis</h3>
+      <p class="step-desc" data-i18n="step-2-desc">Résous des cas réels. Produis des livrables concrets. Reçois du feedback IA instantané.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3 class="step-title" data-i18n="step-3-title">Prouve tes compétences</h3>
+      <p class="step-desc" data-i18n="step-3-desc">Certification vérifiable + portfolio de livrables. Les recruteurs voient ce que tu sais faire.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION CONTEXT -->
+<section class="section-context">
+  <div class="context-wrapper">
+    <div class="context-content">
+      <h2><span data-i18n="context-title-1">Le fossé entre</span> <span class="highlight" data-i18n="context-title-2">formation et emploi</span></h2>
+      <p data-i18n="context-p1">
+        En Afrique de l'Ouest, <strong>6 jeunes diplômés sur 10</strong> ne trouvent pas d'emploi dans leur domaine. Non pas par manque de diplômes, mais par manque d'expérience pratique reconnue.
+      </p>
+      <p data-i18n="context-p2">
+        BAARA SKILLS te donne cette expérience <strong>avant ton premier emploi</strong> — via des simulations co-créées avec de vraies entreprises.
+      </p>
+      
+      <div class="context-stats">
+        <div class="context-stat">
+          <span class="context-stat-num">60%</span>
+          <span class="context-stat-label" data-i18n="context-stat-1">Jeunes diplômés sans emploi</span>
+        </div>
+        <div class="context-stat">
+          <span class="context-stat-num">75%</span>
+          <span class="context-stat-label" data-i18n="context-stat-2">Entreprises cherchent des compétences pratiques</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION PILIERS -->
+<section class="section-piliers">
+  <div class="section-header">
+    <div class="section-eyebrow" data-i18n="pillars-eyebrow">4 piliers</div>
+    <h2 class="section-title" data-i18n="pillars-title">Ce qui fait la différence</h2>
+  </div>
+  
+  <div class="piliers-grid">
+    <div class="pilier">
+      <div class="pilier-title" data-i18n="pillar-1-title">Simulations réelles</div>
+      <p class="pilier-desc" data-i18n="pillar-1-desc">Cas métiers construits avec des entreprises partenaires. Tu travailles sur des problèmes réels.</p>
+    </div>
+    <div class="pilier">
+      <div class="pilier-title" data-i18n="pillar-2-title">Livrables concrets</div>
+      <p class="pilier-desc" data-i18n="pillar-2-desc">Rapports, analyses, décisions documentées. Chaque simulation enrichit ton portfolio.</p>
+    </div>
+    <div class="pilier">
+      <div class="pilier-title" data-i18n="pillar-3-title">Certification vérifiable</div>
+      <p class="pilier-desc" data-i18n="pillar-3-desc">Badge infalsifiable attesté par l'entreprise co-créatrice. Vérifiable en un clic.</p>
+    </div>
+    <div class="pilier">
+      <div class="pilier-title" data-i18n="pillar-4-title">Visibilité recruteurs</div>
+      <p class="pilier-desc" data-i18n="pillar-4-desc">Profil public avec portfolio et score de compétences. Les recruteurs te trouvent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="faq-section">
+  <div class="faq-header">
+    <div class="faq-eyebrow" data-i18n="faq-eyebrow">Questions fréquentes</div>
+    <h2 class="faq-title" data-i18n="faq-title">Tout ce que tu dois savoir</h2>
+  </div>
+  
+  <div class="faq-grid">
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-1-q">C'est vraiment gratuit ?</h3>
+      <p class="faq-answer" data-i18n="faq-1-a">
+        <strong>Oui.</strong> Accès 100% gratuit pour les apprenants. Les entreprises partenaires financent les simulations pour accéder aux meilleurs talents en priorité.
+      </p>
+    </div>
+    
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-2-q">Combien de temps ça prend ?</h3>
+      <p class="faq-answer" data-i18n="faq-2-a">
+        Chaque simulation = <strong>15-20h</strong> réparties sur 2-4 semaines. Tu avances à ton rythme. Pas de deadline stricte.
+      </p>
+    </div>
+    
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-3-q">Quels métiers sont disponibles ?</h3>
+      <p class="faq-answer" data-i18n="faq-3-a">
+        Pilote 2025 : <strong>Analyste Financier, Développeur Web, Recruteur, Assistant Supply Chain.</strong> +10 métiers en 2026 (Marketing Digital, Data Analyst, Chef de Projet...).
+      </p>
+    </div>
+    
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-4-q">Je dois avoir un diplôme ?</h3>
+      <p class="faq-answer" data-i18n="faq-4-a">
+        <strong>Non.</strong> BAARA SKILLS évalue tes compétences pratiques, pas tes diplômes. Motivation + autonomie = seuls prérequis.
+      </p>
+    </div>
+    
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-5-q">Les certifications sont reconnues ?</h3>
+      <p class="faq-answer" data-i18n="faq-5-a">
+        Chaque badge est <strong>co-signé par l'entreprise partenaire</strong> et vérifiable via blockchain. Les recruteurs accèdent à ton portfolio en 1 clic.
+      </p>
+    </div>
+    
+    <div class="faq-item">
+      <h3 class="faq-question" data-i18n="faq-6-q">Dois-je être en Côte d'Ivoire ?</h3>
+      <p class="faq-answer" data-i18n="faq-6-a">
+        Phase pilote 2025 = <strong>priorité Côte d'Ivoire.</strong> Ouverture Afrique de l'Ouest 2026. Inscris-toi pour être notifié de l'expansion.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <div class="cta-content">
+    <h2 data-i18n="cta-title">Prêt à forger ton avenir ?</h2>
+    <p data-i18n="cta-desc">La Côte d'Ivoire a besoin de professionnels de confiance. BAARA SKILLS construit le pont entre formation et emploi.</p>
+    <div class="cta-urgency" data-i18n="cta-urgency">500 places disponibles · Phase pilote 2025</div>
+    
+    <!-- FORM BOTTOM -->
+    <div class="form-block">
+      <span class="form-label">Rejoins la liste d'attente</span>
+      <div class="input-row">
+        <input type="email" id="email-bottom" placeholder="ton.adresse@email.com">
+        <button class="cta-btn" onclick="handleSubmit('bottom')"><span>Rejoindre</span></button>
+      </div>
+      <p class="form-micro">Gratuit · Sans spam · Invitation prioritaire</p>
+      <div class="success-msg" id="success-bottom">
+        <span class="check">✓</span>
+        <p>Tu es sur la liste ! <strong>Merci.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-left">
+      <p>© 2025 BAARA SKILLS</p>
+      <p class="footer-mission" data-i18n="footer-mission">Infrastructure africaine de professionnalisation.</p>
+      <div class="footer-odd">
+        <span class="odd-badge" data-i18n="odd-4">ODD 4 · Éducation</span>
+        <span class="odd-badge" data-i18n="odd-8">ODD 8 · Travail</span>
+      </div>
+    </div>
+    <div class="footer-tags">
+      <span class="ftag">Côte d'Ivoire</span>
+      <span class="ftag">EdTech</span>
+      <span class="ftag">Impact Social</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── TRADUCTIONS ──
+const translations = {
+  fr: {
+    'nav-title': 'BAARA SKILLS',
+    'hero-eyebrow': 'De la formation à l\'emploi',
+    'hero-title-1': 'Forge ton métier.',
+    'hero-title-2': 'Prouve-le.',
+    'hero-desc': 'Des simulations professionnelles co-créées avec des entreprises. Des compétences certifiées. Un portfolio qui prouve ce que tu sais faire.',
+    'tab-student': 'Je suis apprenant',
+    'tab-company': 'Je suis entreprise',
+    'form-label-student': 'Liste d\'attente · Gratuit',
+    'form-pitch-student': 'Rejoins les 500 premiers apprenants en Côte d\'Ivoire. Invitation par email dès l\'ouverture.',
+    'form-placeholder': 'ton.adresse@email.com',
+    'cta-join': 'Rejoindre',
+    'form-micro': 'Accès gratuit · Aucun spam · Désabonnement en 1 clic',
+    'success-student': 'Tu es sur la liste ! On te contacte bientôt. <strong>Merci.</strong>',
+    'form-label-company': 'Devenir partenaire',
+    'form-pitch-company': 'Co-créez une simulation avec vos experts. Accédez aux meilleurs profils avant le marché.',
+    'form-placeholder-company': 'contact@votreentreprise.com',
+    'cta-apply': 'Candidater',
+    'form-micro-company': '5 entreprises pilotes · Tech, Finance, RH, Logistique · Réponse sous 48h',
+    'success-company': 'Demande reçue ! Notre équipe vous contacte sous <strong>48h</strong>.',
+    'stat-places': 'Places disponibles',
+    'stat-companies': 'Entreprises pilotes',
+    'stat-free': 'Pour les apprenants',
+    'proof-label': 'Impact mesurable',
+    'proof-stat-1': 'Objectif d\'employabilité après certification',
+    'proof-stat-2': 'Expérience concrète par simulation',
+    'proof-stat-3': 'Certifications vérifiables par les recruteurs',
+    'steps-eyebrow': 'Comment ça marche',
+    'steps-title': 'De la formation à l\'emploi en 3 étapes',
+    'step-1-title': 'Choisis ta simulation',
+    'step-1-desc': 'Simulations créées avec des entreprises partenaires. Analyse de données, gestion RH, stratégie logistique.',
+    'step-2-title': 'Travaille et produis',
+    'step-2-desc': 'Résous des cas réels. Produis des livrables concrets. Reçois du feedback IA instantané.',
+    'step-3-title': 'Prouve tes compétences',
+    'step-3-desc': 'Certification vérifiable + portfolio de livrables. Les recruteurs voient ce que tu sais faire.',
+    'context-title-1': 'Le fossé entre',
+    'context-title-2': 'formation et emploi',
+    'context-p1': 'En Afrique de l\'Ouest, <strong>6 jeunes diplômés sur 10</strong> ne trouvent pas d\'emploi dans leur domaine. Non pas par manque de diplômes, mais par manque d\'expérience pratique reconnue.',
+    'context-p2': 'BAARA SKILLS te donne cette expérience <strong>avant ton premier emploi</strong> — via des simulations co-créées avec de vraies entreprises.',
+    'context-stat-1': 'Jeunes diplômés sans emploi',
+    'context-stat-2': 'Entreprises cherchent des compétences pratiques',
+    'pillars-eyebrow': '4 piliers',
+    'pillars-title': 'Ce qui fait la différence',
+    'pillar-1-title': 'Simulations réelles',
+    'pillar-1-desc': 'Cas métiers construits avec des entreprises partenaires. Tu travailles sur des problèmes réels.',
+    'pillar-2-title': 'Livrables concrets',
+    'pillar-2-desc': 'Rapports, analyses, décisions documentées. Chaque simulation enrichit ton portfolio.',
+    'pillar-3-title': 'Certification vérifiable',
+    'pillar-3-desc': 'Badge infalsifiable attesté par l\'entreprise co-créatrice. Vérifiable en un clic.',
+    'pillar-4-title': 'Visibilité recruteurs',
+    'pillar-4-desc': 'Profil public avec portfolio et score de compétences. Les recruteurs te trouvent.',
+    'faq-eyebrow': 'Questions fréquentes',
+    'faq-title': 'Tout ce que tu dois savoir',
+    'faq-1-q': 'C\'est vraiment gratuit ?',
+    'faq-1-a': '<strong>Oui.</strong> Accès 100% gratuit pour les apprenants. Les entreprises partenaires financent les simulations pour accéder aux meilleurs talents en priorité.',
+    'faq-2-q': 'Combien de temps ça prend ?',
+    'faq-2-a': 'Chaque simulation = <strong>15-20h</strong> réparties sur 2-4 semaines. Tu avances à ton rythme. Pas de deadline stricte.',
+    'faq-3-q': 'Quels métiers sont disponibles ?',
+    'faq-3-a': 'Pilote 2025 : <strong>Analyste Financier, Développeur Web, Recruteur, Assistant Supply Chain.</strong> +10 métiers en 2026 (Marketing Digital, Data Analyst, Chef de Projet...).',
+    'faq-4-q': 'Je dois avoir un diplôme ?',
+    'faq-4-a': '<strong>Non.</strong> BAARA SKILLS évalue tes compétences pratiques, pas tes diplômes. Motivation + autonomie = seuls prérequis.',
+    'faq-5-q': 'Les certifications sont reconnues ?',
+    'faq-5-a': 'Chaque badge est <strong>co-signé par l\'entreprise partenaire</strong> et vérifiable via blockchain. Les recruteurs accèdent à ton portfolio en 1 clic.',
+    'faq-6-q': 'Dois-je être en Côte d\'Ivoire ?',
+    'faq-6-a': 'Phase pilote 2025 = <strong>priorité Côte d\'Ivoire.</strong> Ouverture Afrique de l\'Ouest 2026. Inscris-toi pour être notifié de l\'expansion.',
+    'cta-title': 'Prêt à forger ton avenir ?',
+    'cta-desc': 'La Côte d\'Ivoire a besoin de professionnels de confiance. BAARA SKILLS construit le pont entre formation et emploi.',
+    'cta-urgency': '500 places disponibles · Phase pilote 2025',
+    'footer-mission': 'Infrastructure africaine de professionnalisation.',
+    'odd-4': 'ODD 4 · Éducation',
+    'odd-8': 'ODD 8 · Travail'
+  },
+  en: {
+    'nav-title': 'BAARA SKILLS',
+    'hero-eyebrow': 'From training to employment',
+    'hero-title-1': 'Build your career.',
+    'hero-title-2': 'Prove it.',
+    'hero-desc': 'Professional simulations co-created with companies. Certified skills. A portfolio that proves what you can do.',
+    'tab-student': 'I\'m a student',
+    'tab-company': 'I\'m a company',
+    'form-label-student': 'Waitlist · Free',
+    'form-pitch-student': 'Join the first 500 learners in Côte d\'Ivoire. Email invitation when we launch.',
+    'form-placeholder': 'your.email@domain.com',
+    'cta-join': 'Join',
+    'form-micro': 'Free access · No spam · Unsubscribe anytime',
+    'success-student': 'You\'re on the list! We\'ll contact you soon. <strong>Thank you.</strong>',
+    'form-label-company': 'Become a partner',
+    'form-pitch-company': 'Co-create a simulation with your experts. Access top talent before the market.',
+    'form-placeholder-company': 'contact@yourcompany.com',
+    'cta-apply': 'Apply',
+    'form-micro-company': '5 pilot companies · Tech, Finance, HR, Logistics · 48h response',
+    'success-company': 'Request received! Our team will contact you within <strong>48h</strong>.',
+    'stat-places': 'Places available',
+    'stat-companies': 'Pilot companies',
+    'stat-free': 'For learners',
+    'proof-label': 'Measurable impact',
+    'proof-stat-1': 'Employability target after certification',
+    'proof-stat-2': 'Hands-on experience per simulation',
+    'proof-stat-3': 'Verifiable certifications by recruiters',
+    'steps-eyebrow': 'How it works',
+    'steps-title': 'From training to employment in 3 steps',
+    'step-1-title': 'Choose your simulation',
+    'step-1-desc': 'Simulations created with partner companies. Data analysis, HR management, logistics strategy.',
+    'step-2-title': 'Work and produce',
+    'step-2-desc': 'Solve real cases. Produce concrete deliverables. Get instant AI feedback.',
+    'step-3-title': 'Prove your skills',
+    'step-3-desc': 'Verifiable certification + portfolio of deliverables. Recruiters see what you can do.',
+    'context-title-1': 'The gap between',
+    'context-title-2': 'training and employment',
+    'context-p1': 'In West Africa, <strong>6 out of 10 young graduates</strong> can\'t find jobs in their field. Not for lack of degrees, but for lack of recognized practical experience.',
+    'context-p2': 'BAARA SKILLS gives you this experience <strong>before your first job</strong> — through simulations co-created with real companies.',
+    'context-stat-1': 'Young graduates unemployed',
+    'context-stat-2': 'Companies seeking practical skills',
+    'pillars-eyebrow': '4 pillars',
+    'pillars-title': 'What makes the difference',
+    'pillar-1-title': 'Real simulations',
+    'pillar-1-desc': 'Business cases built with partner companies. You work on real problems.',
+    'pillar-2-title': 'Concrete deliverables',
+    'pillar-2-desc': 'Reports, analyses, documented decisions. Each simulation enriches your portfolio.',
+    'pillar-3-title': 'Verifiable certification',
+    'pillar-3-desc': 'Tamper-proof badge certified by the co-creating company. Verifiable in one click.',
+    'pillar-4-title': 'Recruiter visibility',
+    'pillar-4-desc': 'Public profile with portfolio and skills score. Recruiters find you.',
+    'faq-eyebrow': 'Frequently asked questions',
+    'faq-title': 'Everything you need to know',
+    'faq-1-q': 'Is it really free?',
+    'faq-1-a': '<strong>Yes.</strong> 100% free access for learners. Partner companies fund simulations to access the best talent first.',
+    'faq-2-q': 'How long does it take?',
+    'faq-2-a': 'Each simulation = <strong>15-20h</strong> spread over 2-4 weeks. You progress at your own pace. No strict deadline.',
+    'faq-3-q': 'What careers are available?',
+    'faq-3-a': '2025 pilot: <strong>Financial Analyst, Web Developer, Recruiter, Supply Chain Assistant.</strong> +10 careers in 2026 (Digital Marketing, Data Analyst, Project Manager...).',
+    'faq-4-q': 'Do I need a degree?',
+    'faq-4-a': '<strong>No.</strong> BAARA SKILLS evaluates your practical skills, not your degrees. Motivation + autonomy = only prerequisites.',
+    'faq-5-q': 'Are certifications recognized?',
+    'faq-5-a': 'Each badge is <strong>co-signed by the partner company</strong> and verifiable via blockchain. Recruiters access your portfolio in 1 click.',
+    'faq-6-q': 'Do I need to be in Côte d\'Ivoire?',
+    'faq-6-a': '2025 pilot phase = <strong>Côte d\'Ivoire priority.</strong> West Africa opening 2026. Sign up to be notified of expansion.',
+    'cta-title': 'Ready to build your future?',
+    'cta-desc': 'Côte d\'Ivoire needs trusted professionals. BAARA SKILLS bridges training and employment.',
+    'cta-urgency': '500 places available · 2025 pilot phase',
+    'footer-mission': 'African professionalization infrastructure.',
+    'odd-4': 'SDG 4 · Education',
+    'odd-8': 'SDG 8 · Work'
+  }
+};
+
+// Current language
+let currentLang = 'fr';
+
+// Set language
+function setLanguage(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  localStorage.setItem('baara-lang', lang);
+  
+  // Update UI
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // Update all translatable elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      el.innerHTML = translations[lang][key];
+    }
+  });
+  
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[lang][key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
+}
+
+// Toggle theme
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('baara-theme', newTheme);
+}
+
+// Load saved preferences
+window.addEventListener('DOMContentLoaded', () => {
+  // Load theme
+  const savedTheme = localStorage.getItem('baara-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
+  // Load language
+  const savedLang = localStorage.getItem('baara-lang') || 'fr';
+  if (savedLang !== 'fr') {
+    const langBtn = document.querySelector(`.lang-btn[onclick="setLanguage('${savedLang}')"]`);
+    if (langBtn) langBtn.click();
+  }
+});
+
+// Switch tabs
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// Google Apps Script URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIhVUPm_494PqwLbEAw0rpzMB-K0C2COgR_JpWaCRIq1Li-ceoIlvA7Brji43dL_Wvdw/exec';
+
+// Form submission
+function handleSubmit(source) {
+  const input = document.getElementById('email-' + source);
+  const email = input.value.trim();
+  const btn = input.nextElementSibling;
+  const btnText = btn.querySelector('span');
+
+  // Validation
+  if (!email || !email.includes('@')) {
+    input.style.borderColor = '#ff4444';
+    input.focus();
+    setTimeout(() => input.style.borderColor = '', 1500);
+    return;
+  }
+
+  // Disable during submission
+  input.disabled = true;
+  btn.disabled = true;
+  const originalText = btnText.textContent;
+  btnText.textContent = '...';
+
+  // Send to Google Sheets
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      email: email, 
+      source: source === 'bottom' ? 'apprenant' : source 
+    })
+  })
+  .then(() => {
+    input.value = '';
+    input.disabled = false;
+    btn.disabled = false;
+    btnText.textContent = '✓';
+    
+    const successEl = document.getElementById('success-' + source);
+    successEl.classList.add('show');
+
+    // Reset button after 3s
+    setTimeout(() => {
+      btnText.textContent = originalText;
+    }, 3000);
+  })
+  .catch(() => {
+    input.disabled = false;
+    btn.disabled = false;
+    btnText.textContent = currentLang === 'fr' ? 'Réessayer' : 'Retry';
+    btn.style.background = '#ff4444';
+  });
+}
+
+// Enter key on inputs
+document.querySelectorAll('input[type="email"]').forEach(input => {
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const id = input.id.replace('email-', '');
+      handleSubmit(id);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
