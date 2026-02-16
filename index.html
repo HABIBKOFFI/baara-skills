@@ -1513,18 +1513,27 @@ function handleSubmit(source) {
     })
   })
   .then(() => {
-    input.value = '';
-    input.disabled = false;
-    btn.disabled = false;
-    btnText.textContent = '✓';
-    
-    const successEl = document.getElementById('success-' + source);
-    successEl.classList.add('show');
+    // ✅ NOUVELLE LOGIQUE : Redirection vers sondage pour les apprenants
+    if (source === 'apprenant' || source === 'bottom') {
+      // Stocker l'email dans localStorage
+      localStorage.setItem('baara-email', email);
+      localStorage.setItem('baara-source', source);
+      // Rediriger immédiatement vers le sondage
+      window.location.href = 'sondage.html';
+    } else {
+      // Pour les entreprises : message de succès classique (pas de sondage)
+      input.value = '';
+      input.disabled = false;
+      btn.disabled = false;
+      btnText.textContent = '✓';
+      
+      const successEl = document.getElementById('success-' + source);
+      successEl.classList.add('show');
 
-    // Reset button after 3s
-    setTimeout(() => {
-      btnText.textContent = originalText;
-    }, 3000);
+      setTimeout(() => {
+        btnText.textContent = originalText;
+      }, 3000);
+    }
   })
   .catch(() => {
     input.disabled = false;
