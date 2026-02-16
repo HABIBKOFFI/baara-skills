@@ -54,21 +54,19 @@
   }
 
   /* NAV */
-   nav {
+  nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem clamp(1.5rem, 5vw, 4rem);
+    padding: 22px 48px;
     background: var(--bg-secondary);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--ligne);
-    box-shadow: 0 2px 10px var(--shadow);
     transition: all 0.3s ease;
   }
-
   .logo {
     font-family: 'Archivo', sans-serif;
     font-weight: 900;
@@ -88,16 +86,22 @@
     animation: rotate-slow 20s linear infinite;
   }
 
-  @keyframes rotate-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .nav-controls {
+  .nav-right {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
+
+  .nav-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--or);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid var(--ligne);
+    padding: 5px 12px;
+  }
+
   /* Toggle Theme */
   .theme-toggle {
     width: 50px;
@@ -246,6 +250,57 @@
     line-height: 1.6;
   }
 
+  /* INPUT FIELDS */
+  input[type="email"],
+  input[type="tel"] {
+    width: 100%;
+    background: var(--nuit2);
+    border: 1px solid var(--ligne);
+    border-bottom: 2px solid var(--or);
+    color: var(--blanc);
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    padding: 18px 20px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  
+  input[type="email"]::placeholder,
+  input[type="tel"]::placeholder {
+    color: var(--gris);
+    opacity: 0.5;
+  }
+  
+  input[type="email"]:focus,
+  input[type="tel"]:focus {
+    border-color: var(--or);
+  }
+  
+  input.error {
+    border-color: #ff4444;
+    animation: shake 0.3s;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+  
+  .error-msg {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: #ff4444;
+    margin-top: -8px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  
+  .error-msg.show {
+    display: block;
+  }
+
   /* OPTIONS */
   .options-grid {
     display: flex;
@@ -346,6 +401,35 @@
   }
   textarea::placeholder { color: var(--gris); opacity: 0.5; }
   textarea:focus { border-color: var(--or); }
+
+  /* CHAMP "AUTRE" */
+  .other-input {
+    width: 100%;
+    background: var(--nuit2);
+    border: 1px solid var(--ligne);
+    border-bottom: 2px solid var(--or);
+    color: var(--blanc);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-top: 12px;
+    display: none;
+  }
+  
+  .other-input.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .other-input::placeholder { color: var(--gris); opacity: 0.5; }
+  .other-input:focus { border-color: var(--or); }
 
   /* NAVIGATION BUTTONS */
   .nav-btns {
@@ -454,9 +538,7 @@
 <nav>
   <div class="logo">
     <div class="logo-symbol"></div>
-    <span data-i18n="nav-title">BAARA SKILLS</span>
-  </div>
-  
+  <div class="nav-right">
     <div class="nav-tag" data-i18n="nav-tag">Sondage Apprenants</div>
     <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"></div>
     <div class="lang-selector">
@@ -473,16 +555,13 @@
 <div class="survey-wrap">
   <div class="question-container">
 
-    <!-- Q1 -->
+    <!-- Q1 - EMAIL -->
     <div class="question-card active" id="q1">
-      <div class="q-num" data-i18n="q-num-1">Question 01 / 08</div>
-      <h2 class="q-title" data-i18n="q1-title">Sur une échelle de 1 à 10, à quel point fais-tu confiance à ton CV pour décrocher un entretien ?</h2>
-      <p class="q-sub" data-i18n="q1-sub">1 = pas du tout · 10 = totalement confiant</p>
-      <div class="scale-wrap" id="scale-q1"></div>
-      <div class="scale-labels">
-        <span data-i18n="scale-not-at-all">Pas du tout</span>
-        <span data-i18n="scale-fully">Totalement confiant</span>
-      </div>
+      <div class="q-num" data-i18n="q-num-1">Question 01 / 10</div>
+      <h2 class="q-title" data-i18n="q1-title">Ton adresse email</h2>
+      <p class="q-sub" data-i18n="q1-sub">Nous en avons besoin pour te recontacter et t'informer du lancement.</p>
+      <input type="email" id="email-input" data-i18n-placeholder="q1-placeholder" placeholder="ton.email@exemple.com" oninput="validateEmail()">
+      <div class="error-msg" id="email-error" data-i18n="email-error">Format d'email invalide (exemple: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e6061634e6a61636f67606b206d6163">[email&#160;protected]</a>)</div>
       <div class="nav-btns">
         <div></div>
         <div style="display:flex;align-items:center;gap:20px;">
@@ -492,28 +571,13 @@
       </div>
     </div>
 
-    <!-- Q2 -->
+    <!-- Q2 - TÉLÉPHONE -->
     <div class="question-card" id="q2">
-      <div class="q-num" data-i18n="q-num-2">Question 02 / 08</div>
-      <h2 class="q-title" data-i18n="q2-title">Quelle est ta situation actuelle ?</h2>
-      <p class="q-sub" data-i18n="q2-sub">Choisis l'option qui te correspond le mieux.</p>
-      <div class="options-grid">
-        <button class="option-btn" onclick="selectOption(this, 'q2')">
-          <span class="option-letter">A</span> <span data-i18n="q2-a">Étudiant(e) en fin de cycle</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q2')">
-          <span class="option-letter">B</span> <span data-i18n="q2-b">Diplômé(e) en recherche d'emploi</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q2')">
-          <span class="option-letter">C</span> <span data-i18n="q2-c">En stage / alternance</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q2')">
-          <span class="option-letter">D</span> <span data-i18n="q2-d">En reconversion professionnelle</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q2')">
-          <span class="option-letter">E</span> <span data-i18n="q2-e">Autre</span>
-        </button>
-      </div>
+      <div class="q-num" data-i18n="q-num-2">Question 02 / 10</div>
+      <h2 class="q-title" data-i18n="q2-title">Ton numéro de téléphone</h2>
+      <p class="q-sub" data-i18n="q2-sub">Format international recommandé (ex: +225 07 12 34 56 78)</p>
+      <input type="tel" id="phone-input" data-i18n-placeholder="q2-placeholder" placeholder="+225 XX XX XX XX XX" oninput="validatePhone()">
+      <div class="error-msg" id="phone-error" data-i18n="phone-error">Format invalide (minimum 8 chiffres, ex: +225 0712345678)</div>
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(2)" data-i18n="btn-prev">← Retour</button>
         <div style="display:flex;align-items:center;gap:20px;">
@@ -523,27 +587,15 @@
       </div>
     </div>
 
-    <!-- Q3 -->
+    <!-- Q3 - Échelle CV -->
     <div class="question-card" id="q3">
-      <div class="q-num" data-i18n="q-num-3">Question 03 / 08</div>
-      <h2 class="q-title" data-i18n="q3-title">Quel est ton plus grand frein pour décrocher un emploi ?</h2>
-      <p class="q-sub" data-i18n="q3-sub">Sois honnête — c'est confidentiel.</p>
-      <div class="options-grid">
-        <button class="option-btn" onclick="selectOption(this, 'q3')">
-          <span class="option-letter">A</span> <span data-i18n="q3-a">Manque d'expérience professionnelle</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q3')">
-          <span class="option-letter">B</span> <span data-i18n="q3-b">Compétences techniques insuffisantes</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q3')">
-          <span class="option-letter">C</span> <span data-i18n="q3-c">Absence de réseau professionnel</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q3')">
-          <span class="option-letter">D</span> <span data-i18n="q3-d">Manque de confiance en soi</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q3')">
-          <span class="option-letter">E</span> <span data-i18n="q3-e">CV qui ne valorise pas assez mes compétences</span>
-        </button>
+      <div class="q-num" data-i18n="q-num-3">Question 03 / 10</div>
+      <h2 class="q-title" data-i18n="q3-title">Sur une échelle de 1 à 10, à quel point fais-tu confiance à ton CV pour décrocher un entretien ?</h2>
+      <p class="q-sub" data-i18n="q3-sub">1 = pas du tout · 10 = totalement confiant</p>
+      <div class="scale-wrap" id="scale-q3"></div>
+      <div class="scale-labels">
+        <span data-i18n="scale-not-at-all">Pas du tout</span>
+        <span data-i18n="scale-fully">Totalement confiant</span>
       </div>
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(3)" data-i18n="btn-prev">← Retour</button>
@@ -554,16 +606,29 @@
       </div>
     </div>
 
-    <!-- Q4 -->
+    <!-- Q4 - Situation -->
     <div class="question-card" id="q4">
-      <div class="q-num" data-i18n="q-num-4">Question 04 / 08</div>
-      <h2 class="q-title" data-i18n="q4-title">À quel point es-tu frustré(e) par le système actuel de recrutement ?</h2>
-      <p class="q-sub" data-i18n="q4-sub">1 = pas frustré · 10 = extrêmement frustré</p>
-      <div class="scale-wrap" id="scale-q4"></div>
-      <div class="scale-labels">
-        <span data-i18n="scale-not-at-all">Pas du tout</span>
-        <span data-i18n="scale-frustrated">Extrêmement frustré</span>
+      <div class="q-num" data-i18n="q-num-4">Question 04 / 10</div>
+      <h2 class="q-title" data-i18n="q4-title">Quelle est ta situation actuelle ?</h2>
+      <p class="q-sub" data-i18n="q4-sub">Choisis l'option qui te correspond le mieux.</p>
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption(this, 'q4')">
+          <span class="option-letter">A</span> <span data-i18n="q4-a">Étudiant(e) en fin de cycle</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q4')">
+          <span class="option-letter">B</span> <span data-i18n="q4-b">Diplômé(e) en recherche d'emploi</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q4')">
+          <span class="option-letter">C</span> <span data-i18n="q4-c">En stage / alternance</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q4')">
+          <span class="option-letter">D</span> <span data-i18n="q4-d">En reconversion professionnelle</span>
+        </button>
+        <button class="option-btn" onclick="selectOptionWithOther(this, 'q4', 'other-q4')">
+          <span class="option-letter">E</span> <span data-i18n="q4-e">Autre</span>
+        </button>
       </div>
+      <input type="text" id="other-q4" class="other-input" data-i18n-placeholder="other-placeholder" placeholder="Précisez votre situation..." oninput="checkOtherInput('q4')">
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(4)" data-i18n="btn-prev">← Retour</button>
         <div style="display:flex;align-items:center;gap:20px;">
@@ -573,12 +638,32 @@
       </div>
     </div>
 
-    <!-- Q5 -->
+    <!-- Q5 - Frein -->
     <div class="question-card" id="q5">
-      <div class="q-num" data-i18n="q-num-5">Question 05 / 08</div>
-      <h2 class="q-title" data-i18n="q5-title">Quel est le moment le plus décourageant dans ta recherche ?</h2>
-      <p class="q-sub" data-i18n="q5-sub">Une phrase suffit. C'est confidentiel.</p>
-      <textarea id="text-q5" data-i18n-placeholder="q5-placeholder" placeholder="Ex : Quand je vois 'minimum 2 ans d'expérience' pour un poste junior..." oninput="checkTextarea('q5')"></textarea>
+      <div class="q-num" data-i18n="q-num-5">Question 05 / 10</div>
+      <h2 class="q-title" data-i18n="q5-title">Quel est ton plus grand frein pour décrocher un emploi ?</h2>
+      <p class="q-sub" data-i18n="q5-sub">Sois honnête — c'est confidentiel.</p>
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption(this, 'q5')">
+          <span class="option-letter">A</span> <span data-i18n="q5-a">Manque d'expérience professionnelle</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q5')">
+          <span class="option-letter">B</span> <span data-i18n="q5-b">Compétences techniques insuffisantes</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q5')">
+          <span class="option-letter">C</span> <span data-i18n="q5-c">Absence de réseau professionnel</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q5')">
+          <span class="option-letter">D</span> <span data-i18n="q5-d">Manque de confiance en soi</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q5')">
+          <span class="option-letter">E</span> <span data-i18n="q5-e">CV qui ne valorise pas assez mes compétences</span>
+        </button>
+        <button class="option-btn" onclick="selectOptionWithOther(this, 'q5', 'other-q5')">
+          <span class="option-letter">F</span> <span data-i18n="q5-f">Autre</span>
+        </button>
+      </div>
+      <input type="text" id="other-q5" class="other-input" data-i18n-placeholder="other-placeholder" placeholder="Précisez votre frein..." oninput="checkOtherInput('q5')">
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(5)" data-i18n="btn-prev">← Retour</button>
         <div style="display:flex;align-items:center;gap:20px;">
@@ -588,24 +673,15 @@
       </div>
     </div>
 
-    <!-- Q6 -->
+    <!-- Q6 - Frustration -->
     <div class="question-card" id="q6">
-      <div class="q-num" data-i18n="q-num-6">Question 06 / 08</div>
-      <h2 class="q-title" data-i18n="q6-title">Si tu pouvais travailler sur une vraie mission d'entreprise pendant 4h et obtenir une certification vérifiable — tu le ferais ?</h2>
-      <p class="q-sub" data-i18n="q6-sub">C'est exactement ce que BAARA SKILLS propose.</p>
-      <div class="options-grid">
-        <button class="option-btn" onclick="selectOption(this, 'q6')">
-          <span class="option-letter">A</span> <span data-i18n="q6-a">Oui, immédiatement ✦</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q6')">
-          <span class="option-letter">B</span> <span data-i18n="q6-b">Oui, si c'est dans mon secteur</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q6')">
-          <span class="option-letter">C</span> <span data-i18n="q6-c">Peut-être</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q6')">
-          <span class="option-letter">D</span> <span data-i18n="q6-d">Non</span>
-        </button>
+      <div class="q-num" data-i18n="q-num-6">Question 06 / 10</div>
+      <h2 class="q-title" data-i18n="q6-title">À quel point es-tu frustré(e) par le système actuel de recrutement ?</h2>
+      <p class="q-sub" data-i18n="q6-sub">1 = pas frustré · 10 = extrêmement frustré</p>
+      <div class="scale-wrap" id="scale-q6"></div>
+      <div class="scale-labels">
+        <span data-i18n="scale-not-at-all">Pas du tout</span>
+        <span data-i18n="scale-frustrated">Extrêmement frustré</span>
       </div>
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(6)" data-i18n="btn-prev">← Retour</button>
@@ -616,25 +692,12 @@
       </div>
     </div>
 
-    <!-- Q7 -->
+    <!-- Q7 - Moment décourageant -->
     <div class="question-card" id="q7">
-      <div class="q-num" data-i18n="q-num-7">Question 07 / 08</div>
-      <h2 class="q-title" data-i18n="q7-title">Serais-tu prêt(e) à payer pour une expérience professionnelle certifiée ?</h2>
-      <p class="q-sub" data-i18n="q7-sub">Sois honnête — ça nous aide à construire le bon modèle.</p>
-      <div class="options-grid">
-        <button class="option-btn" onclick="selectOption(this, 'q7')">
-          <span class="option-letter">A</span> <span data-i18n="q7-a">Oui — moins de 20€</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q7')">
-          <span class="option-letter">B</span> <span data-i18n="q7-b">Oui — entre 20€ et 50€</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q7')">
-          <span class="option-letter">C</span> <span data-i18n="q7-c">Oui — plus de 50€</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q7')">
-          <span class="option-letter">D</span> <span data-i18n="q7-d">Non, uniquement si c'est gratuit</span>
-        </button>
-      </div>
+      <div class="q-num" data-i18n="q-num-7">Question 07 / 10</div>
+      <h2 class="q-title" data-i18n="q7-title">Quel est le moment le plus décourageant dans ta recherche ?</h2>
+      <p class="q-sub" data-i18n="q7-sub">Une phrase suffit. C'est confidentiel.</p>
+      <textarea id="text-q7" data-i18n-placeholder="q7-placeholder" placeholder="Ex : Quand je vois 'minimum 2 ans d'expérience' pour un poste junior..." oninput="checkTextarea('q7')"></textarea>
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(7)" data-i18n="btn-prev">← Retour</button>
         <div style="display:flex;align-items:center;gap:20px;">
@@ -644,36 +707,96 @@
       </div>
     </div>
 
-    <!-- Q8 -->
+    <!-- Q8 - Produit -->
     <div class="question-card" id="q8">
-      <div class="q-num" data-i18n="q-num-8">Question 08 / 08</div>
-      <h2 class="q-title" data-i18n="q8-title">Quel secteur t'intéresse le plus ?</h2>
-      <p class="q-sub" data-i18n="q8-sub">On construit les simulations dans l'ordre de la demande.</p>
+      <div class="q-num" data-i18n="q-num-8">Question 08 / 10</div>
+      <h2 class="q-title" data-i18n="q8-title">Si tu pouvais travailler sur une vraie mission d'entreprise pendant 4h et obtenir une certification vérifiable — tu le ferais ?</h2>
+      <p class="q-sub" data-i18n="q8-sub">C'est exactement ce que BAARA SKILLS propose.</p>
       <div class="options-grid">
         <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">A</span> <span data-i18n="q8-a">Tech & Digital</span>
+          <span class="option-letter">A</span> <span data-i18n="q8-a">Oui, immédiatement ✦</span>
         </button>
         <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">B</span> <span data-i18n="q8-b">Finance & Comptabilité</span>
+          <span class="option-letter">B</span> <span data-i18n="q8-b">Oui, si c'est dans mon secteur</span>
         </button>
         <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">C</span> <span data-i18n="q8-c">Ressources Humaines</span>
+          <span class="option-letter">C</span> <span data-i18n="q8-c">Peut-être</span>
         </button>
         <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">D</span> <span data-i18n="q8-d">Marketing & Communication</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">E</span> <span data-i18n="q8-e">Logistique & Supply Chain</span>
-        </button>
-        <button class="option-btn" onclick="selectOption(this, 'q8')">
-          <span class="option-letter">F</span> <span data-i18n="q8-f">Data & Analyse</span>
+          <span class="option-letter">D</span> <span data-i18n="q8-d">Non</span>
         </button>
       </div>
       <div class="nav-btns">
         <button class="btn-prev" onclick="prevQuestion(8)" data-i18n="btn-prev">← Retour</button>
         <div style="display:flex;align-items:center;gap:20px;">
           <span class="press-enter" data-i18n="press-enter">Appuie sur Entrée ↵</span>
-          <button class="btn-next" id="next-q8" onclick="submitSurvey()" disabled data-i18n="btn-send">Envoyer ✦</button>
+          <button class="btn-next" id="next-q8" onclick="nextQuestion(8)" disabled data-i18n="btn-next">Suivant →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q9 - Paiement -->
+    <div class="question-card" id="q9">
+      <div class="q-num" data-i18n="q-num-9">Question 09 / 10</div>
+      <h2 class="q-title" data-i18n="q9-title">Serais-tu prêt(e) à payer pour une expérience professionnelle certifiée ?</h2>
+      <p class="q-sub" data-i18n="q9-sub">Sois honnête — ça nous aide à construire le bon modèle.</p>
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption(this, 'q9')">
+          <span class="option-letter">A</span> <span data-i18n="q9-a">Oui — moins de 10 000 FCFA</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q9')">
+          <span class="option-letter">B</span> <span data-i18n="q9-b">Oui — entre 10 000 et 25 000 FCFA</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q9')">
+          <span class="option-letter">C</span> <span data-i18n="q9-c">Oui — plus de 50 000 FCFA</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q9')">
+          <span class="option-letter">D</span> <span data-i18n="q9-d">Non, uniquement si c'est gratuit</span>
+        </button>
+      </div>
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="prevQuestion(9)" data-i18n="btn-prev">← Retour</button>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <span class="press-enter" data-i18n="press-enter">Appuie sur Entrée ↵</span>
+          <button class="btn-next" id="next-q9" onclick="nextQuestion(9)" disabled data-i18n="btn-next">Suivant →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q10 - Secteur -->
+    <div class="question-card" id="q10">
+      <div class="q-num" data-i18n="q-num-10">Question 10 / 10</div>
+      <h2 class="q-title" data-i18n="q10-title">Quel secteur t'intéresse le plus ?</h2>
+      <p class="q-sub" data-i18n="q10-sub">On construit les simulations dans l'ordre de la demande.</p>
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">A</span> <span data-i18n="q10-a">Tech & Digital</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">B</span> <span data-i18n="q10-b">Finance & Comptabilité</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">C</span> <span data-i18n="q10-c">Ressources Humaines</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">D</span> <span data-i18n="q10-d">Marketing & Communication</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">E</span> <span data-i18n="q10-e">Logistique & Supply Chain</span>
+        </button>
+        <button class="option-btn" onclick="selectOption(this, 'q10')">
+          <span class="option-letter">F</span> <span data-i18n="q10-f">Data & Analyse</span>
+        </button>
+        <button class="option-btn" onclick="selectOptionWithOther(this, 'q10', 'other-q10')">
+          <span class="option-letter">G</span> <span data-i18n="q10-g">Autre</span>
+        </button>
+      </div>
+      <input type="text" id="other-q10" class="other-input" data-i18n-placeholder="other-placeholder-sector" placeholder="Précisez le secteur..." oninput="checkOtherInput('q10')">
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="prevQuestion(10)" data-i18n="btn-prev">← Retour</button>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <span class="press-enter" data-i18n="press-enter">Appuie sur Entrée ↵</span>
+          <button class="btn-next" id="next-q10" onclick="submitSurvey()" disabled data-i18n="btn-send">Envoyer ✦</button>
         </div>
       </div>
     </div>
@@ -689,62 +812,76 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════
 // TRADUCTIONS FR/EN
 // ══════════════════════════════════════════════════════════
 const translations = {
   fr: {
     'nav-tag': 'Sondage Apprenants',
-    'q-num-1': 'Question 01 / 08',
-    'q-num-2': 'Question 02 / 08',
-    'q-num-3': 'Question 03 / 08',
-    'q-num-4': 'Question 04 / 08',
-    'q-num-5': 'Question 05 / 08',
-    'q-num-6': 'Question 06 / 08',
-    'q-num-7': 'Question 07 / 08',
-    'q-num-8': 'Question 08 / 08',
-    'q1-title': 'Sur une échelle de 1 à 10, à quel point fais-tu confiance à ton CV pour décrocher un entretien ?',
-    'q1-sub': '1 = pas du tout · 10 = totalement confiant',
-    'q2-title': 'Quelle est ta situation actuelle ?',
-    'q2-sub': 'Choisis l\'option qui te correspond le mieux.',
-    'q2-a': 'Étudiant(e) en fin de cycle',
-    'q2-b': 'Diplômé(e) en recherche d\'emploi',
-    'q2-c': 'En stage / alternance',
-    'q2-d': 'En reconversion professionnelle',
-    'q2-e': 'Autre',
-    'q3-title': 'Quel est ton plus grand frein pour décrocher un emploi ?',
-    'q3-sub': 'Sois honnête — c\'est confidentiel.',
-    'q3-a': 'Manque d\'expérience professionnelle',
-    'q3-b': 'Compétences techniques insuffisantes',
-    'q3-c': 'Absence de réseau professionnel',
-    'q3-d': 'Manque de confiance en soi',
-    'q3-e': 'CV qui ne valorise pas assez mes compétences',
-    'q4-title': 'À quel point es-tu frustré(e) par le système actuel de recrutement ?',
-    'q4-sub': '1 = pas frustré · 10 = extrêmement frustré',
-    'q5-title': 'Quel est le moment le plus décourageant dans ta recherche ?',
-    'q5-sub': 'Une phrase suffit. C\'est confidentiel.',
-    'q5-placeholder': 'Ex : Quand je vois "minimum 2 ans d\'expérience" pour un poste junior...',
-    'q6-title': 'Si tu pouvais travailler sur une vraie mission d\'entreprise pendant 4h et obtenir une certification vérifiable — tu le ferais ?',
-    'q6-sub': 'C\'est exactement ce que BAARA SKILLS propose.',
-    'q6-a': 'Oui, immédiatement ✦',
-    'q6-b': 'Oui, si c\'est dans mon secteur',
-    'q6-c': 'Peut-être',
-    'q6-d': 'Non',
-    'q7-title': 'Serais-tu prêt(e) à payer pour une expérience professionnelle certifiée ?',
-    'q7-sub': 'Sois honnête — ça nous aide à construire le bon modèle.',
-    'q7-a': 'Oui — moins de 20€',
-    'q7-b': 'Oui — entre 20€ et 50€',
-    'q7-c': 'Oui — plus de 50€',
-    'q7-d': 'Non, uniquement si c\'est gratuit',
-    'q8-title': 'Quel secteur t\'intéresse le plus ?',
-    'q8-sub': 'On construit les simulations dans l\'ordre de la demande.',
-    'q8-a': 'Tech & Digital',
-    'q8-b': 'Finance & Comptabilité',
-    'q8-c': 'Ressources Humaines',
-    'q8-d': 'Marketing & Communication',
-    'q8-e': 'Logistique & Supply Chain',
-    'q8-f': 'Data & Analyse',
+    'q-num-1': 'Question 01 / 10',
+    'q-num-2': 'Question 02 / 10',
+    'q-num-3': 'Question 03 / 10',
+    'q-num-4': 'Question 04 / 10',
+    'q-num-5': 'Question 05 / 10',
+    'q-num-6': 'Question 06 / 10',
+    'q-num-7': 'Question 07 / 10',
+    'q-num-8': 'Question 08 / 10',
+    'q-num-9': 'Question 09 / 10',
+    'q-num-10': 'Question 10 / 10',
+    'q1-title': 'Ton adresse email',
+    'q1-sub': 'Nous en avons besoin pour te recontacter et t\'informer du lancement.',
+    'q1-placeholder': 'ton.email@exemple.com',
+    'email-error': 'Format d\'email invalide (exemple: nom@domaine.com)',
+    'q2-title': 'Ton numéro de téléphone',
+    'q2-sub': 'Format international recommandé (ex: +225 07 12 34 56 78)',
+    'q2-placeholder': '+225 XX XX XX XX XX',
+    'phone-error': 'Format invalide (minimum 8 chiffres, ex: +225 0712345678)',
+    'q3-title': 'Sur une échelle de 1 à 10, à quel point fais-tu confiance à ton CV pour décrocher un entretien ?',
+    'q3-sub': '1 = pas du tout · 10 = totalement confiant',
+    'q4-title': 'Quelle est ta situation actuelle ?',
+    'q4-sub': 'Choisis l\'option qui te correspond le mieux.',
+    'q4-a': 'Étudiant(e) en fin de cycle',
+    'q4-b': 'Diplômé(e) en recherche d\'emploi',
+    'q4-c': 'En stage / alternance',
+    'q4-d': 'En reconversion professionnelle',
+    'q4-e': 'Autre',
+    'q5-title': 'Quel est ton plus grand frein pour décrocher un emploi ?',
+    'q5-sub': 'Sois honnête — c\'est confidentiel.',
+    'q5-a': 'Manque d\'expérience professionnelle',
+    'q5-b': 'Compétences techniques insuffisantes',
+    'q5-c': 'Absence de réseau professionnel',
+    'q5-d': 'Manque de confiance en soi',
+    'q5-e': 'CV qui ne valorise pas assez mes compétences',
+    'q5-f': 'Autre',
+    'q6-title': 'À quel point es-tu frustré(e) par le système actuel de recrutement ?',
+    'q6-sub': '1 = pas frustré · 10 = extrêmement frustré',
+    'q7-title': 'Quel est le moment le plus décourageant dans ta recherche ?',
+    'q7-sub': 'Une phrase suffit. C\'est confidentiel.',
+    'q7-placeholder': 'Ex : Quand je vois "minimum 2 ans d\'expérience" pour un poste junior...',
+    'q8-title': 'Si tu pouvais travailler sur une vraie mission d\'entreprise pendant 4h et obtenir une certification vérifiable — tu le ferais ?',
+    'q8-sub': 'C\'est exactement ce que BAARA SKILLS propose.',
+    'q8-a': 'Oui, immédiatement ✦',
+    'q8-b': 'Oui, si c\'est dans mon secteur',
+    'q8-c': 'Peut-être',
+    'q8-d': 'Non',
+    'q9-title': 'Serais-tu prêt(e) à payer pour une expérience professionnelle certifiée ?',
+    'q9-sub': 'Sois honnête — ça nous aide à construire le bon modèle.',
+    'q9-a': 'Oui — moins de 10 000 FCFA',
+    'q9-b': 'Oui — entre 10 000 et 25 000 FCFA',
+    'q9-c': 'Oui — plus de 50 000 FCFA',
+    'q9-d': 'Non, uniquement si c\'est gratuit',
+    'q10-title': 'Quel secteur t\'intéresse le plus ?',
+    'q10-sub': 'On construit les simulations dans l\'ordre de la demande.',
+    'q10-a': 'Tech & Digital',
+    'q10-b': 'Finance & Comptabilité',
+    'q10-c': 'Ressources Humaines',
+    'q10-d': 'Marketing & Communication',
+    'q10-e': 'Logistique & Supply Chain',
+    'q10-f': 'Data & Analyse',
+    'q10-g': 'Autre',
+    'other-placeholder': 'Précisez...',
+    'other-placeholder-sector': 'Précisez le secteur...',
     'scale-not-at-all': 'Pas du tout',
     'scale-fully': 'Totalement confiant',
     'scale-frustrated': 'Extrêmement frustré',
@@ -758,55 +895,69 @@ const translations = {
   },
   en: {
     'nav-tag': 'Learner Survey',
-    'q-num-1': 'Question 01 / 08',
-    'q-num-2': 'Question 02 / 08',
-    'q-num-3': 'Question 03 / 08',
-    'q-num-4': 'Question 04 / 08',
-    'q-num-5': 'Question 05 / 08',
-    'q-num-6': 'Question 06 / 08',
-    'q-num-7': 'Question 07 / 08',
-    'q-num-8': 'Question 08 / 08',
-    'q1-title': 'On a scale of 1 to 10, how confident are you that your resume will get you an interview?',
-    'q1-sub': '1 = not at all · 10 = totally confident',
-    'q2-title': 'What is your current situation?',
-    'q2-sub': 'Choose the option that best describes you.',
-    'q2-a': 'Final year student',
-    'q2-b': 'Graduate looking for work',
-    'q2-c': 'Intern / apprentice',
-    'q2-d': 'Career change',
-    'q2-e': 'Other',
-    'q3-title': 'What is your biggest barrier to getting a job?',
-    'q3-sub': 'Be honest — it\'s confidential.',
-    'q3-a': 'Lack of professional experience',
-    'q3-b': 'Insufficient technical skills',
-    'q3-c': 'Absence of professional network',
-    'q3-d': 'Lack of self-confidence',
-    'q3-e': 'Resume that doesn\'t showcase my skills enough',
-    'q4-title': 'How frustrated are you with the current recruitment system?',
-    'q4-sub': '1 = not frustrated · 10 = extremely frustrated',
-    'q5-title': 'What is the most discouraging moment in your job search?',
-    'q5-sub': 'One sentence is enough. It\'s confidential.',
-    'q5-placeholder': 'E.g.: When I see "minimum 2 years experience" for a junior position...',
-    'q6-title': 'If you could work on a real company project for 4 hours and get verifiable certification — would you do it?',
-    'q6-sub': 'That\'s exactly what BAARA SKILLS offers.',
-    'q6-a': 'Yes, immediately ✦',
-    'q6-b': 'Yes, if it\'s in my field',
-    'q6-c': 'Maybe',
-    'q6-d': 'No',
-    'q7-title': 'Would you be willing to pay for a certified professional experience?',
-    'q7-sub': 'Be honest — it helps us build the right model.',
-    'q7-a': 'Yes — less than €20',
-    'q7-b': 'Yes — between €20 and €50',
-    'q7-c': 'Yes — more than €50',
-    'q7-d': 'No, only if it\'s free',
-    'q8-title': 'Which sector interests you most?',
-    'q8-sub': 'We build simulations in order of demand.',
-    'q8-a': 'Tech & Digital',
-    'q8-b': 'Finance & Accounting',
-    'q8-c': 'Human Resources',
-    'q8-d': 'Marketing & Communication',
-    'q8-e': 'Logistics & Supply Chain',
-    'q8-f': 'Data & Analysis',
+    'q-num-1': 'Question 01 / 10',
+    'q-num-2': 'Question 02 / 10',
+    'q-num-3': 'Question 03 / 10',
+    'q-num-4': 'Question 04 / 10',
+    'q-num-5': 'Question 05 / 10',
+    'q-num-6': 'Question 06 / 10',
+    'q-num-7': 'Question 07 / 10',
+    'q-num-8': 'Question 08 / 10',
+    'q-num-9': 'Question 09 / 10',
+    'q-num-10': 'Question 10 / 10',
+    'q1-title': 'Your email address',
+    'q1-sub': 'We need it to contact you and inform you of the launch.',
+    'q1-placeholder': 'your.email@example.com',
+    'email-error': 'Invalid email format (example: name@domain.com)',
+    'q2-title': 'Your phone number',
+    'q2-sub': 'International format recommended (e.g.: +225 07 12 34 56 78)',
+    'q2-placeholder': '+225 XX XX XX XX XX',
+    'phone-error': 'Invalid format (minimum 8 digits, e.g.: +225 0712345678)',
+    'q3-title': 'On a scale of 1 to 10, how confident are you that your resume will get you an interview?',
+    'q3-sub': '1 = not at all · 10 = totally confident',
+    'q4-title': 'What is your current situation?',
+    'q4-sub': 'Choose the option that best describes you.',
+    'q4-a': 'Final year student',
+    'q4-b': 'Graduate looking for work',
+    'q4-c': 'Intern / apprentice',
+    'q4-d': 'Career change',
+    'q4-e': 'Other',
+    'q5-title': 'What is your biggest barrier to getting a job?',
+    'q5-sub': 'Be honest — it\'s confidential.',
+    'q5-a': 'Lack of professional experience',
+    'q5-b': 'Insufficient technical skills',
+    'q5-c': 'Absence of professional network',
+    'q5-d': 'Lack of self-confidence',
+    'q5-e': 'Resume that doesn\'t showcase my skills enough',
+    'q5-f': 'Other',
+    'q6-title': 'How frustrated are you with the current recruitment system?',
+    'q6-sub': '1 = not frustrated · 10 = extremely frustrated',
+    'q7-title': 'What is the most discouraging moment in your job search?',
+    'q7-sub': 'One sentence is enough. It\'s confidential.',
+    'q7-placeholder': 'E.g.: When I see "minimum 2 years experience" for a junior position...',
+    'q8-title': 'If you could work on a real company project for 4 hours and get verifiable certification — would you do it?',
+    'q8-sub': 'That\'s exactly what BAARA SKILLS offers.',
+    'q8-a': 'Yes, immediately ✦',
+    'q8-b': 'Yes, if it\'s in my field',
+    'q8-c': 'Maybe',
+    'q8-d': 'No',
+    'q9-title': 'Would you be willing to pay for a certified professional experience?',
+    'q9-sub': 'Be honest — it helps us build the right model.',
+    'q9-a': 'Yes — less than 10,000 FCFA',
+    'q9-b': 'Yes — between 10,000 and 25,000 FCFA',
+    'q9-c': 'Yes — more than 50,000 FCFA',
+    'q9-d': 'No, only if it\'s free',
+    'q10-title': 'Which sector interests you most?',
+    'q10-sub': 'We build simulations in order of demand.',
+    'q10-a': 'Tech & Digital',
+    'q10-b': 'Finance & Accounting',
+    'q10-c': 'Human Resources',
+    'q10-d': 'Marketing & Communication',
+    'q10-e': 'Logistics & Supply Chain',
+    'q10-f': 'Data & Analysis',
+    'q10-g': 'Other',
+    'other-placeholder': 'Please specify...',
+    'other-placeholder-sector': 'Please specify sector...',
     'scale-not-at-all': 'Not at all',
     'scale-fully': 'Totally confident',
     'scale-frustrated': 'Extremely frustrated',
@@ -854,11 +1005,9 @@ function toggleTheme() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  // Charger le thème sauvegardé
   const savedTheme = localStorage.getItem('baara-survey-theme') || localStorage.getItem('baara-theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
   
-  // Charger la langue sauvegardée
   const savedLang = localStorage.getItem('baara-survey-lang') || localStorage.getItem('baara-lang') || 'fr';
   if (savedLang !== 'fr') {
     const langBtn = document.querySelector(`.lang-btn[onclick="setLanguage('${savedLang}')"]`);
@@ -867,45 +1016,104 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Récupérer l'email depuis localStorage
+  // ✅ NOUVEAU : Si l'utilisateur vient de la landing page avec un email, le pré-remplir
   const storedEmail = localStorage.getItem('baara-email');
-  if (!storedEmail) {
-    alert('Veuillez d\'abord vous inscrire sur la page d\'accueil.');
-    window.location.href = 'index.html';
+  if (storedEmail) {
+    document.getElementById('email-input').value = storedEmail;
+    validateEmail(); // Valider automatiquement
+    localStorage.removeItem('baara-email');
+    localStorage.removeItem('baara-source');
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// VALIDATION EMAIL
+// ══════════════════════════════════════════════════════════
+function validateEmail() {
+  const input = document.getElementById('email-input');
+  const error = document.getElementById('email-error');
+  const btn = document.getElementById('next-q1');
+  const email = input.value.trim();
+  
+  // Regex email basique mais robuste
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  if (email.length === 0) {
+    input.classList.remove('error');
+    error.classList.remove('show');
+    btn.disabled = true;
     return;
   }
   
-  userEmail = storedEmail;
-  answers['email'] = storedEmail;
-  localStorage.removeItem('baara-email');
-  localStorage.removeItem('baara-source');
-});
+  if (emailRegex.test(email)) {
+    input.classList.remove('error');
+    error.classList.remove('show');
+    btn.disabled = false;
+    answers['email'] = email;
+  } else {
+    input.classList.add('error');
+    error.classList.add('show');
+    btn.disabled = true;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// VALIDATION TÉLÉPHONE
+// ══════════════════════════════════════════════════════════
+function validatePhone() {
+  const input = document.getElementById('phone-input');
+  const error = document.getElementById('phone-error');
+  const btn = document.getElementById('next-q2');
+  const phone = input.value.trim();
+  
+  // Extraire uniquement les chiffres
+  const digitsOnly = phone.replace(/\D/g, '');
+  
+  // Minimum 8 chiffres (peut contenir +, espaces, tirets)
+  if (phone.length === 0) {
+    input.classList.remove('error');
+    error.classList.remove('show');
+    btn.disabled = true;
+    return;
+  }
+  
+  if (digitsOnly.length >= 8) {
+    input.classList.remove('error');
+    error.classList.remove('show');
+    btn.disabled = false;
+    answers['phone'] = phone;
+  } else {
+    input.classList.add('error');
+    error.classList.add('show');
+    btn.disabled = true;
+  }
+}
 
 // ══════════════════════════════════════════════════════════
 // LOGIQUE DU SONDAGE
 // ══════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIhVUPm_494PqwLbEAw0rpzMB-K0C2COgR_JpWaCRIq1Li-ceoIlvA7Brji43dL_Wvdw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIEczJKbvqAHvROBfWfeaA8omWRVW66djucwaL5yczZU64y_WrKsmEQF1knBPZhtB3Jw/exec';
 
-const TOTAL = 8;
+const TOTAL = 10;
 let answers = {};
 let current = 1;
-let userEmail = '';
 
-const scaleQ1 = document.getElementById('scale-q1');
-const scaleQ4 = document.getElementById('scale-q4');
+// Générer les échelles Q3 et Q6
+const scaleQ3 = document.getElementById('scale-q3');
+const scaleQ6 = document.getElementById('scale-q6');
 
 for (let i = 1; i <= 10; i++) {
-  const btn1 = document.createElement('button');
-  btn1.className = 'scale-btn';
-  btn1.textContent = i;
-  btn1.onclick = () => selectScale(btn1, i, 'q1');
-  scaleQ1.appendChild(btn1);
+  const btn3 = document.createElement('button');
+  btn3.className = 'scale-btn';
+  btn3.textContent = i;
+  btn3.onclick = () => selectScale(btn3, i, 'q3');
+  scaleQ3.appendChild(btn3);
   
-  const btn4 = document.createElement('button');
-  btn4.className = 'scale-btn';
-  btn4.textContent = i;
-  btn4.onclick = () => selectScale(btn4, i, 'q4');
-  scaleQ4.appendChild(btn4);
+  const btn6 = document.createElement('button');
+  btn6.className = 'scale-btn';
+  btn6.textContent = i;
+  btn6.onclick = () => selectScale(btn6, i, 'q6');
+  scaleQ6.appendChild(btn6);
 }
 
 function updateProgress() {
@@ -919,6 +1127,39 @@ function selectOption(btn, qId) {
   btn.classList.add('selected');
   answers[qId] = btn.textContent.trim().substring(1).trim();
   document.getElementById('next-' + qId).disabled = false;
+  
+  // Masquer le champ "Autre" si une autre option est sélectionnée
+  const otherInput = document.getElementById('other-' + qId);
+  if (otherInput) {
+    otherInput.classList.remove('show');
+    otherInput.value = '';
+  }
+}
+
+function selectOptionWithOther(btn, qId, otherInputId) {
+  const parent = btn.closest('.options-grid');
+  parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  
+  // Afficher le champ "Autre"
+  const otherInput = document.getElementById(otherInputId);
+  otherInput.classList.add('show');
+  otherInput.focus();
+  
+  // Désactiver le bouton "Suivant" jusqu'à ce que l'utilisateur écrive quelque chose
+  document.getElementById('next-' + qId).disabled = true;
+}
+
+function checkOtherInput(qId) {
+  const otherInput = document.getElementById('other-' + qId);
+  const val = otherInput.value.trim();
+  
+  if (val.length >= 3) {
+    answers[qId] = 'Autre : ' + val;
+    document.getElementById('next-' + qId).disabled = false;
+  } else {
+    document.getElementById('next-' + qId).disabled = true;
+  }
 }
 
 function selectScale(btn, val, qId) {
@@ -961,21 +1202,22 @@ document.addEventListener('keydown', e => {
 });
 
 function submitSurvey() {
-  const btn = document.getElementById('next-q8');
+  const btn = document.getElementById('next-q10');
   btn.textContent = '...';
   btn.disabled = true;
 
   const payload = {
     source: 'sondage',
-    email: userEmail,
-    q1_confiance: answers['q1'] || '',
-    q2_profil: answers['q2'] || '',
-    q3_frein: answers['q3'] || '',
-    q4_frustration: answers['q4'] || '',
-    q5_moment: answers['q5'] || '',
-    q6_produit: answers['q6'] || '',
-    q7_paiement: answers['q7'] || '',
-    q8_secteur: answers['q8'] || ''
+    email: answers['email'] || '',
+    phone: answers['phone'] || '',
+    q1_confiance: answers['q3'] || '',
+    q2_profil: answers['q4'] || '',
+    q3_frein: answers['q5'] || '',
+    q4_frustration: answers['q6'] || '',
+    q5_moment: answers['q7'] || '',
+    q6_produit: answers['q8'] || '',
+    q7_paiement: answers['q9'] || '',
+    q8_secteur: answers['q10'] || ''
   };
 
   fetch(SCRIPT_URL, {
@@ -985,12 +1227,12 @@ function submitSurvey() {
     body: JSON.stringify(payload)
   })
   .then(() => {
-    document.getElementById('q8').classList.remove('active');
+    document.getElementById('q10').classList.remove('active');
     document.getElementById('success').classList.add('active');
     document.getElementById('progressBar').style.width = '100%';
   })
   .catch(() => {
-    document.getElementById('q8').classList.remove('active');
+    document.getElementById('q10').classList.remove('active');
     document.getElementById('success').classList.add('active');
     document.getElementById('progressBar').style.width = '100%';
   });
@@ -998,5 +1240,6 @@ function submitSurvey() {
 
 updateProgress();
 </script>
+
 </body>
 </html>
