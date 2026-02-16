@@ -1482,6 +1482,8 @@ function switchTab(id, btn) {
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxIhVUPm_494PqwLbEAw0rpzMB-K0C2COgR_JpWaCRIq1Li-ceoIlvA7Brji43dL_Wvdw/exec';
 
 // Form submission
+// REMPLACER la fonction handleSubmit() existante par celle-ci :
+
 function handleSubmit(source) {
   const input = document.getElementById('email-' + source);
   const email = input.value.trim();
@@ -1513,18 +1515,25 @@ function handleSubmit(source) {
     })
   })
   .then(() => {
-    input.value = '';
-    input.disabled = false;
-    btn.disabled = false;
-    btnText.textContent = '✓';
-    
-    const successEl = document.getElementById('success-' + source);
-    successEl.classList.add('show');
+    // ✅ NOUVELLE LOGIQUE : Redirection vers sondage pour les apprenants
+    if (source === 'apprenant' || source === 'bottom') {
+      localStorage.setItem('baara-email', email);
+      localStorage.setItem('baara-source', source);
+      window.location.href = 'sondage.html';
+    } else {
+      // Pour les entreprises : message de succès classique
+      input.value = '';
+      input.disabled = false;
+      btn.disabled = false;
+      btnText.textContent = '✓';
+      
+      const successEl = document.getElementById('success-' + source);
+      successEl.classList.add('show');
 
-    // Reset button after 3s
-    setTimeout(() => {
-      btnText.textContent = originalText;
-    }, 3000);
+      setTimeout(() => {
+        btnText.textContent = originalText;
+      }, 3000);
+    }
   })
   .catch(() => {
     input.disabled = false;
@@ -1533,7 +1542,6 @@ function handleSubmit(source) {
     btn.style.background = '#ff4444';
   });
 }
-
 // Enter key on inputs
 document.querySelectorAll('input[type="email"]').forEach(input => {
   input.addEventListener('keydown', e => {
