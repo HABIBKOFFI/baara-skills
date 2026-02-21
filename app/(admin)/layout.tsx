@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LayoutDashboard, BookOpen, Users, BarChart3 } from 'lucide-react'
+import { BookOpen, Users, BarChart3 } from 'lucide-react'
 
 const adminLinks = [
   { href: '/admin/metriques', label: 'Métriques', icon: <BarChart3 size={18} /> },

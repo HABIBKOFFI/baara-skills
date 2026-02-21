@@ -57,9 +57,9 @@ export default async function RecruteurDashboard() {
 
   // Compter les complétions par simulation
   const simCount = new Map<string, { titre: string; count: number }>()
-  topSimulations?.forEach((e: { simulation_id: string; simulations: { titre: string } | null }) => {
+  topSimulations?.forEach((e: { simulation_id: string; simulations: { titre: string }[] | null }) => {
     const key = e.simulation_id
-    const titre = e.simulations?.titre || 'Inconnu'
+    const titre = (Array.isArray(e.simulations) ? e.simulations[0]?.titre : (e.simulations as { titre: string } | null)?.titre) || 'Inconnu'
     simCount.set(key, { titre, count: (simCount.get(key)?.count || 0) + 1 })
   })
   const topSims = Array.from(simCount.values())

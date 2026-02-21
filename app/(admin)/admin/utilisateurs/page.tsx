@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Users, UserCheck, Briefcase, Shield, Search } from 'lucide-react'
+import { Users, UserCheck, Briefcase, Shield } from 'lucide-react'
 import type { Profile } from '@/types/profile'
 
 const roleConfig = {

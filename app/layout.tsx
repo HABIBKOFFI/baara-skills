@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -6,8 +6,13 @@ export const metadata: Metadata = {
   description:
     'Plateforme panafricaine de simulations métiers. Acquiers une expérience professionnelle certifiée avant ton premier recrutement.',
   manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
   themeColor: '#1A2742',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
