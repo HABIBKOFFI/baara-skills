@@ -106,51 +106,38 @@ export default function ModulePage() {
       setError('Ton livrable est trop court. Développe davantage ta réponse.')
       return
     }
+    if (!enrollmentId) {
+      setError('Inscription introuvable. Recharge la page.')
+      return
+    }
     setError(null)
     setSubmitting(true)
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Non connecté')
-
-      // Vérifier le rate limit (5 soumissions/jour)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
-      const { count } = await supabase
-        .from('submissions')
-        .select('*', { count: 'exact', head: true })
-        .eq('apprenant_id', user.id)
-        .gte('submitted_at', today.toISOString())
-
-      if ((count || 0) >= 5) {
-        throw new Error(
-          'Tu as atteint la limite de 5 soumissions par jour. Réessaie demain !'
-        )
-      }
-
-      // Créer la submission
-      const { data: sub, error: subError } = await supabase
-        .from('submissions')
-        .insert({
-          apprenant_id: user.id,
-          module_id: moduleId,
-          enrollment_id: enrollmentId,
-          contenu_texte: livrable,
-          statut: 'en_attente',
-        })
-        .select()
-        .single()
-
-      if (subError) throw subError
-
-      // Appeler l'API de feedback IA
-      const res = await fetch('/api/feedback', {
+      // Étape 1 — créer la soumission via /api/submit
+      const submitRes = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          submissionId: sub.id,
+          moduleId,
+          enrollmentId,
+          contenuTexte: livrable,
+        }),
+      })
+
+      const submitData = await submitRes.json()
+      if (!submitRes.ok) {
+        throw new Error(submitData.error || 'Erreur lors de la soumission.')
+      }
+
+      const submissionId = submitData.submissionId
+
+      // Étape 2 — générer le feedback IA via /api/feedback
+      const feedbackRes = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          submissionId,
           briefing: moduleData?.briefing_contenu,
           livrable,
           titreModule: moduleData?.titre,
@@ -158,12 +145,12 @@ export default function ModulePage() {
         }),
       })
 
-      if (!res.ok) {
-        const data = await res.json()
+      if (!feedbackRes.ok) {
+        const data = await feedbackRes.json()
         throw new Error(data.error || 'Erreur lors de l\'évaluation.')
       }
 
-      router.push(`/simulation/${simulationId}/feedback/${sub.id}`)
+      router.push(`/simulation/${simulationId}/feedback/${submissionId}`)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erreur lors de la soumission.')
     } finally {
