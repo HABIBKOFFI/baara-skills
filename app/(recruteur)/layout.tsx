@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Users, LayoutDashboard } from 'lucide-react'
+import { Users, LayoutDashboard, UserCircle } from 'lucide-react'
 import LogoutButton from '@/components/shared/LogoutButton'
 
 export default async function RecruteurLayout({
@@ -44,6 +44,13 @@ export default async function RecruteurLayout({
           >
             <Users size={18} />
             Candidats
+          </Link>
+          <Link
+            href="/recruteur/profil"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors min-h-[44px]"
+          >
+            <UserCircle size={18} />
+            Profil
           </Link>
         </div>
         <LogoutButton />
