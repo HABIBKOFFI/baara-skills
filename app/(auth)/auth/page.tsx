@@ -44,15 +44,19 @@ export default function AuthPage() {
         })
         if (error) throw error
 
-        // Vérifier si le profil existe (onboarding fait ou pas)
+        // Vérifier le profil pour rediriger selon le rôle
         const { data: profile } = await supabase
           .from('profiles')
-          .select('prenom')
+          .select('prenom, role')
           .eq('id', data.user.id)
           .single()
 
         if (!profile?.prenom) {
           router.push('/onboarding')
+        } else if (profile.role === 'recruteur') {
+          router.push('/recruteur/dashboard')
+        } else if (profile.role === 'admin') {
+          router.push('/admin/metriques')
         } else {
           router.push('/catalogue')
         }

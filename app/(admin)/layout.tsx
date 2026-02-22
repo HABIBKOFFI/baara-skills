@@ -1,3 +1,5 @@
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { BookOpen, Users, BarChart3 } from 'lucide-react'
 import LogoutButton from '@/components/shared/LogoutButton'
@@ -8,11 +10,24 @@ const adminLinks = [
   { href: '/admin/utilisateurs', label: 'Utilisateurs', icon: <Users size={18} /> },
 ]
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/auth')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') redirect('/catalogue')
+
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1A2742] text-white h-16 flex items-center px-6 shadow-md">
