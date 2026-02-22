@@ -2,7 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  // Si les variables Supabase ne sont pas configurées, laisser passer
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.next()
   }
@@ -29,41 +28,25 @@ export async function middleware(request: NextRequest) {
       }
     )
 
+    // getSession() lit le cookie localement sans appel réseau → fiable sur Edge
     const {
-      data: { user },
-    } = await supabase.auth.getUser()
+      data: { session },
+    } = await supabase.auth.getSession()
 
     const { pathname } = request.nextUrl
 
-    // Routes publiques — pas de protection
+    // Routes publiques
     const publicPaths = ['/auth']
     if (publicPaths.some((p) => pathname.startsWith(p))) {
-      if (user) {
+      if (session) {
         return NextResponse.redirect(new URL('/catalogue', request.url))
       }
       return supabaseResponse
     }
 
-    // Routes protégées — rediriger vers /auth si non connecté
-    if (!user) {
+    // Routes protégées
+    if (!session) {
       return NextResponse.redirect(new URL('/auth', request.url))
-    }
-
-    // Vérifier le rôle pour les routes recruteur et admin
-    if (pathname.startsWith('/recruteur') || pathname.startsWith('/admin')) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      if (pathname.startsWith('/recruteur') && profile?.role !== 'recruteur' && profile?.role !== 'admin') {
-        return NextResponse.redirect(new URL('/catalogue', request.url))
-      }
-
-      if (pathname.startsWith('/admin') && profile?.role !== 'admin') {
-        return NextResponse.redirect(new URL('/catalogue', request.url))
-      }
     }
 
     return supabaseResponse
