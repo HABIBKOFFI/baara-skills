@@ -47,7 +47,11 @@ export default function CataloguePage() {
         setEnrollments(map)
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Impossible de charger les simulations.')
+      if (err && typeof err === 'object' && 'message' in err) {
+        setError((err as { message: string }).message)
+      } else {
+        setError('Impossible de charger les simulations.')
+      }
     } finally {
       setLoading(false)
     }
