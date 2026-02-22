@@ -90,11 +90,11 @@ export async function POST(req: NextRequest) {
       .eq('apprenant_id', user.id)
       .gte('submitted_at', debutJournee.toISOString())
 
-    if ((count || 0) >= 5) {
+    if ((count || 0) >= 20) {
       return NextResponse.json(
         {
           error:
-            'Tu as atteint la limite de 5 soumissions par jour. Réessaie demain !',
+            'Tu as atteint la limite de 20 soumissions par jour. Réessaie demain !',
         },
         { status: 429 }
       )
