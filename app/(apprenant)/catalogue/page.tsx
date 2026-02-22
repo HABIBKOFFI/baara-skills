@@ -51,7 +51,7 @@ export default function CataloguePage() {
         err && typeof err === 'object' && 'message' in err
           ? (err as { message: string; code?: string; details?: string }).message +
             ((err as { code?: string }).code
-              ? ` (code: ${(err as { code: string }).code})`
+              ? ` (code: ${(err as unknown as { code: string }).code})`
               : '')
           : String(err)
       setError(msg || 'Impossible de charger les simulations.')
