@@ -47,14 +47,13 @@ export default function CataloguePage() {
         setEnrollments(map)
       }
     } catch (err: unknown) {
-      const msg =
-        err && typeof err === 'object' && 'message' in err
-          ? (err as { message: string; code?: string; details?: string }).message +
-            ((err as { code?: string }).code
-              ? ` (code: ${(err as unknown as { code: string }).code})`
-              : '')
-          : String(err)
-      setError(msg || 'Impossible de charger les simulations.')
+      if (err && typeof err === 'object' && 'message' in err) {
+        const e = err as { message: string; code?: string }
+        const msg = e.message + (e.code ? ` (code: ${e.code})` : '')
+        setError(msg || 'Impossible de charger les simulations.')
+      } else {
+        setError(String(err) || 'Impossible de charger les simulations.')
+      }
     } finally {
       setLoading(false)
     }
