@@ -1,13 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, Users, BarChart3 } from 'lucide-react'
+import { BookOpen, Users, BarChart3, UserCircle } from 'lucide-react'
 import LogoutButton from '@/components/shared/LogoutButton'
 
 const adminLinks = [
   { href: '/admin/metriques', label: 'Métriques', icon: <BarChart3 size={18} /> },
   { href: '/admin/simulations', label: 'Simulations', icon: <BookOpen size={18} /> },
   { href: '/admin/utilisateurs', label: 'Utilisateurs', icon: <Users size={18} /> },
+  { href: '/admin/profil', label: 'Profil', icon: <UserCircle size={18} /> },
 ]
 
 export default async function AdminLayout({
