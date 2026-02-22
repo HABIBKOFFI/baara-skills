@@ -1,12 +1,27 @@
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Users, LayoutDashboard } from 'lucide-react'
 import LogoutButton from '@/components/shared/LogoutButton'
 
-export default function RecruteurLayout({
+export default async function RecruteurLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/auth')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'recruteur') redirect('/catalogue')
+
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       {/* Nav recruteur */}
