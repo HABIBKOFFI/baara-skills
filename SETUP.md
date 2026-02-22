@@ -45,7 +45,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- -----------------------------------------------
 -- TABLE : profiles (étend auth.users de Supabase)
 -- -----------------------------------------------
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
   role text NOT NULL DEFAULT 'apprenant'
     CHECK (role IN ('apprenant', 'recruteur', 'admin')),
@@ -63,7 +63,7 @@ CREATE TABLE profiles (
 -- -----------------------------------------------
 -- TABLE : simulations
 -- -----------------------------------------------
-CREATE TABLE simulations (
+CREATE TABLE IF NOT EXISTS simulations (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   slug text UNIQUE NOT NULL,
   titre text NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE simulations (
 -- -----------------------------------------------
 -- TABLE : modules
 -- -----------------------------------------------
-CREATE TABLE modules (
+CREATE TABLE IF NOT EXISTS modules (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   simulation_id uuid NOT NULL REFERENCES simulations ON DELETE CASCADE,
   titre text NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE modules (
 -- -----------------------------------------------
 -- TABLE : enrollments
 -- -----------------------------------------------
-CREATE TABLE enrollments (
+CREATE TABLE IF NOT EXISTS enrollments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   apprenant_id uuid NOT NULL REFERENCES profiles ON DELETE CASCADE,
   simulation_id uuid NOT NULL REFERENCES simulations ON DELETE CASCADE,
@@ -112,7 +112,7 @@ CREATE TABLE enrollments (
 -- -----------------------------------------------
 -- TABLE : submissions
 -- -----------------------------------------------
-CREATE TABLE submissions (
+CREATE TABLE IF NOT EXISTS submissions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   apprenant_id uuid NOT NULL REFERENCES profiles ON DELETE CASCADE,
   module_id uuid NOT NULL REFERENCES modules ON DELETE CASCADE,
@@ -127,7 +127,7 @@ CREATE TABLE submissions (
 -- -----------------------------------------------
 -- TABLE : feedbacks
 -- -----------------------------------------------
-CREATE TABLE feedbacks (
+CREATE TABLE IF NOT EXISTS feedbacks (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   submission_id uuid NOT NULL REFERENCES submissions ON DELETE CASCADE,
   score_global int CHECK (score_global BETWEEN 0 AND 100),
@@ -145,7 +145,7 @@ CREATE TABLE feedbacks (
 -- -----------------------------------------------
 -- TABLE : certificats
 -- -----------------------------------------------
-CREATE TABLE certificats (
+CREATE TABLE IF NOT EXISTS certificats (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   apprenant_id uuid NOT NULL REFERENCES profiles ON DELETE CASCADE,
   simulation_id uuid NOT NULL REFERENCES simulations ON DELETE CASCADE,
