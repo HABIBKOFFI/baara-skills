@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
@@ -18,10 +18,8 @@ export async function middleware(request: NextRequest) {
           getAll() {
             return request.cookies.getAll()
           },
-          setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-            cookiesToSet.forEach(({ name, value }) =>
-              request.cookies.set(name, value)
-            )
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
             supabaseResponse = NextResponse.next({ request })
             cookiesToSet.forEach(({ name, value, options }) =>
               supabaseResponse.cookies.set(name, value, options)
@@ -40,7 +38,6 @@ export async function middleware(request: NextRequest) {
     // Routes publiques — pas de protection
     const publicPaths = ['/auth']
     if (publicPaths.some((p) => pathname.startsWith(p))) {
-      // Si déjà connecté, rediriger vers le catalogue
       if (user) {
         return NextResponse.redirect(new URL('/catalogue', request.url))
       }
@@ -71,7 +68,6 @@ export async function middleware(request: NextRequest) {
 
     return supabaseResponse
   } catch {
-    // En cas d'erreur inattendue, laisser passer plutôt que de bloquer l'application
     return NextResponse.next()
   }
 }
