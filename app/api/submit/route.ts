@@ -62,7 +62,25 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Rate limit : max 5 soumissions par jour
+    // Si une soumission en_attente existe déjà pour ce module, la mettre à jour
+    // (ne compte pas comme une nouvelle soumission pour le rate limit)
+    if (existante && existante.statut === 'en_attente') {
+      const { data: submission, error: subError } = await supabase
+        .from('submissions')
+        .update({
+          contenu_texte: contenuTexte.trim(),
+          submitted_at: new Date().toISOString(),
+        })
+        .eq('id', existante.id)
+        .select()
+        .single()
+
+      if (subError) throw subError
+
+      return NextResponse.json({ success: true, submissionId: submission.id })
+    }
+
+    // Rate limit : max 5 nouvelles soumissions par jour (modules jamais soumis)
     const debutJournee = new Date()
     debutJournee.setHours(0, 0, 0, 0)
 
