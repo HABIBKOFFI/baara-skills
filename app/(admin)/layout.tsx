@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { BookOpen, Users, BarChart3 } from 'lucide-react'
+import LogoutButton from '@/components/shared/LogoutButton'
 
 const adminLinks = [
   { href: '/admin/metriques', label: 'Métriques', icon: <BarChart3 size={18} /> },
@@ -31,7 +32,7 @@ export default function AdminLayout({
             </Link>
           ))}
         </div>
-        <span className="text-xs text-white/40 font-mono">Back-office</span>
+        <LogoutButton />
       </nav>
       <div className="pt-16">{children}</div>
     </div>
