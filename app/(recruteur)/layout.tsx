@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Users, LayoutDashboard, LogOut } from 'lucide-react'
+import { Users, LayoutDashboard } from 'lucide-react'
+import LogoutButton from '@/components/shared/LogoutButton'
 
 export default function RecruteurLayout({
   children,
@@ -30,12 +31,7 @@ export default function RecruteurLayout({
             Candidats
           </Link>
         </div>
-        <form action="/auth/signout" method="post">
-          <button className="flex items-center gap-2 text-white/70 hover:text-white text-sm px-3 py-2 rounded-lg hover:bg-white/10 transition-colors min-h-[44px]">
-            <LogOut size={18} />
-            Déconnexion
-          </button>
-        </form>
+        <LogoutButton />
       </nav>
       <div className="pt-16">{children}</div>
     </div>
