@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { genererFeedbackIA } from '@/lib/claude'
+import { genererNumeroCertificat } from '@/lib/utils'
 
 export async function POST(req: NextRequest) {
   try {
@@ -121,18 +122,29 @@ export async function POST(req: NextRequest) {
           })
           .eq('id', submission.enrollment_id)
 
-        // Générer le certificat
-        await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/certificat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            enrollmentId: submission.enrollment_id,
-            apprenantId: user.id,
-            simulationId: enrollment.simulation_id,
-            scoreFinal: feedbackIA.score_global,
-            mention: feedbackIA.mention,
-          }),
-        })
+        // Générer le certificat directement en base
+        const { data: existingCert } = await supabase
+          .from('certificats')
+          .select('id')
+          .eq('enrollment_id', submission.enrollment_id)
+          .single()
+
+        if (!existingCert) {
+          const { error: certError } = await supabase
+            .from('certificats')
+            .insert({
+              apprenant_id: user.id,
+              simulation_id: enrollment.simulation_id,
+              enrollment_id: submission.enrollment_id,
+              score_final: feedbackIA.score_global,
+              mention: feedbackIA.mention,
+              numero_certificat: genererNumeroCertificat(),
+            })
+
+          if (certError) {
+            console.error('Erreur création certificat:', certError)
+          }
+        }
       }
     }
 
