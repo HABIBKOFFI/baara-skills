@@ -1,58 +1,35 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return NextResponse.next()
+/**
+ * Middleware léger sans @supabase/ssr — compatible Edge runtime Vercel.
+ * La clé Supabase au format sb_publishable_... n'est pas un JWT et cause
+ * un crash silencieux dans @supabase/ssr. On vérifie simplement la présence
+ * du cookie de session Supabase (sb-*-auth-token).
+ * La vérification réelle du token JWT se fait dans chaque page/API via getUser().
+ */
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Chercher le cookie de session Supabase (format: sb-<projectRef>-auth-token)
+  const cookies = request.cookies.getAll()
+  const isAuthenticated = cookies.some(
+    (c) => c.name.startsWith('sb-') && c.name.endsWith('-auth-token') && c.value
+  )
+
+  const publicPaths = ['/auth']
+  const isPublic = publicPaths.some((p) => pathname.startsWith(p))
+
+  // Déjà connecté → rediriger depuis /auth vers le catalogue
+  if (isPublic && isAuthenticated) {
+    return NextResponse.redirect(new URL('/catalogue', request.url))
   }
 
-  try {
-    let supabaseResponse = NextResponse.next({ request })
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll()
-          },
-          setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-            supabaseResponse = NextResponse.next({ request })
-            cookiesToSet.forEach(({ name, value, options }) =>
-              supabaseResponse.cookies.set(name, value, options)
-            )
-          },
-        },
-      }
-    )
-
-    // getSession() lit le cookie localement sans appel réseau → fiable sur Edge
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    const { pathname } = request.nextUrl
-
-    // Routes publiques
-    const publicPaths = ['/auth']
-    if (publicPaths.some((p) => pathname.startsWith(p))) {
-      if (session) {
-        return NextResponse.redirect(new URL('/catalogue', request.url))
-      }
-      return supabaseResponse
-    }
-
-    // Routes protégées
-    if (!session) {
-      return NextResponse.redirect(new URL('/auth', request.url))
-    }
-
-    return supabaseResponse
-  } catch {
-    return NextResponse.next()
+  // Non connecté → rediriger vers /auth
+  if (!isPublic && !isAuthenticated) {
+    return NextResponse.redirect(new URL('/auth', request.url))
   }
+
+  return NextResponse.next()
 }
 
 export const config = {
