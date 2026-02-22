@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { MapPin, GraduationCap, BookOpen, Linkedin, Award } from 'lucide-react'
 import type { Profile } from '@/types/profile'
 import { cn } from '@/lib/utils'
@@ -26,10 +27,12 @@ export default function ProfilCard({
       {/* Avatar + nom */}
       <div className="flex items-center gap-4 mb-4">
         {profile.photo_url ? (
-          <img
+          <Image
             src={profile.photo_url}
             alt={`${profile.prenom} ${profile.nom}`}
-            className="w-14 h-14 rounded-full object-cover shrink-0"
+            width={56}
+            height={56}
+            className="rounded-full object-cover shrink-0"
           />
         ) : (
           <div className="w-14 h-14 rounded-full bg-[#1A2742] flex items-center justify-center text-white text-lg font-bold shrink-0 uppercase">
