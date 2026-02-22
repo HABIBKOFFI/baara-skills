@@ -632,10 +632,10 @@ copy .env.local.example .env.local
 Ouvre `.env.local` et remplis :
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://cqfklzsvjbmpmtvawsen.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_LGWm-ilZqwGtqCjrNzZjLg_ojStA34Z
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_IUP0y2CxE45ZLrfqELcvJA_GG1qujoq
-ANTHROPIC_API_KEY=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
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ANTHROPIC_API_KEY=sk-ant-api03-...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
