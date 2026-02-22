@@ -83,9 +83,20 @@ export default function OnboardingPage() {
         return
       }
 
+      // Récupérer le rôle existant pour ne pas l'écraser (recruteur/admin)
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      const role = existing?.role === 'recruteur' || existing?.role === 'admin'
+        ? existing.role
+        : 'apprenant'
+
       const { error } = await supabase.from('profiles').upsert({
         id: user.id,
-        role: 'apprenant',
+        role,
         prenom: form.prenom.trim(),
         nom: form.nom.trim(),
         ville: form.ville || 'Abidjan',
