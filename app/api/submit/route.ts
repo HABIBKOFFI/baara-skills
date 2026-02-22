@@ -80,26 +80,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, submissionId: submission.id })
     }
 
-    // Rate limit : max 5 nouvelles soumissions par jour (modules jamais soumis)
-    const debutJournee = new Date()
-    debutJournee.setHours(0, 0, 0, 0)
-
-    const { count } = await supabase
-      .from('submissions')
-      .select('*', { count: 'exact', head: true })
-      .eq('apprenant_id', user.id)
-      .gte('submitted_at', debutJournee.toISOString())
-
-    if ((count || 0) >= 20) {
-      return NextResponse.json(
-        {
-          error:
-            'Tu as atteint la limite de 20 soumissions par jour. Réessaie demain !',
-        },
-        { status: 429 }
-      )
-    }
-
     // Créer la soumission
     const { data: submission, error: subError } = await supabase
       .from('submissions')
