@@ -74,6 +74,12 @@ export default function CataloguePage() {
   })
 
   const filtres: Filtre[] = ['tous', 'Débutant', 'Intermédiaire', 'Avancé']
+  const filtreLabels: Record<Filtre, string> = {
+    tous: 'Tous les niveaux',
+    Débutant: 'Débutant',
+    Intermédiaire: 'Intermédiaire',
+    Avancé: 'Avancé',
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
@@ -82,30 +88,48 @@ export default function CataloguePage() {
         <h1 className="text-[28px] font-bold text-[#1A2742] mb-1">
           Simulations
         </h1>
-        <p className="text-[#6B7280] text-sm">
-          {simulations.length} simulation{simulations.length !== 1 ? 's' : ''} disponible{simulations.length !== 1 ? 's' : ''}
+        {/* aria-live annonce les changements de résultats aux lecteurs d'écran */}
+        <p
+          className="text-[#6B7280] text-sm"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {loading
+            ? 'Chargement…'
+            : `${filtrees.length} simulation${filtrees.length !== 1 ? 's' : ''} disponible${filtrees.length !== 1 ? 's' : ''}`}
         </p>
       </div>
 
       {/* Barre de recherche */}
       <div className="relative mb-4">
-        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
+        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" aria-hidden="true" />
+        <label htmlFor="recherche-simulation" className="sr-only">
+          Rechercher une simulation
+        </label>
         <input
-          type="text"
+          id="recherche-simulation"
+          type="search"
           value={recherche}
           onChange={(e) => setRecherche(e.target.value)}
           placeholder="Rechercher une simulation…"
+          aria-label="Rechercher par titre, entreprise ou domaine"
           className="w-full pl-10 pr-4 py-2.5 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] min-h-[44px] text-base bg-white"
         />
       </div>
 
       {/* Filtres niveau */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      <div
+        role="group"
+        aria-label="Filtrer par niveau"
+        className="flex gap-2 mb-6 overflow-x-auto pb-1"
+      >
         {filtres.map((f) => (
           <button
             key={f}
             onClick={() => setFiltre(f)}
-            className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium min-h-[36px] transition-colors ${
+            aria-pressed={filtre === f}
+            aria-label={filtreLabels[f]}
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium min-h-[44px] transition-colors ${
               filtre === f
                 ? 'bg-[#1A2742] text-white'
                 : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#1A2742]/40'
@@ -118,27 +142,28 @@ export default function CataloguePage() {
 
       {/* Contenu */}
       {loading ? (
-        <SkeletonList count={4} />
+        <div role="status" aria-label="Chargement des simulations">
+          <SkeletonList count={4} />
+        </div>
       ) : error ? (
         <ErrorState message={error} onRetry={charger} />
       ) : filtrees.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-[#6B7280] text-sm">
-            {recherche
-              ? `Aucun résultat pour « ${recherche} »`
-              : 'Aucune simulation disponible pour le moment.'}
-          </p>
-        </div>
+        <p role="status" className="text-center py-16 text-[#6B7280] text-sm">
+          {recherche
+            ? `Aucun résultat pour « ${recherche} »`
+            : 'Aucune simulation disponible pour le moment.'}
+        </p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4 list-none p-0">
           {filtrees.map((sim) => (
-            <SimulationCard
-              key={sim.id}
-              simulation={sim}
-              enrollment={enrollments.get(sim.id) || null}
-            />
+            <li key={sim.id}>
+              <SimulationCard
+                simulation={sim}
+                enrollment={enrollments.get(sim.id) || null}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   )

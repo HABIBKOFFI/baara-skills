@@ -24,7 +24,6 @@
 
 html {
   font-size: 16px;
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -41,7 +40,52 @@ body {
   overflow-x: hidden;
 }
 
-/* Scrollbar discrète */
+/* -----------------------------------------------
+   FOCUS VISIBLE — styles intentionnels et visibles
+   pour tous les utilisateurs clavier / switch access
+----------------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Sur fond sombre (nav) — anneau blanc */
+.focus-dark:focus-visible {
+  outline-color: #ffffff;
+}
+
+/* Supprimer l'outline quand navigation à la souris */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* -----------------------------------------------
+   SKIP NAVIGATION — lien visible au focus clavier
+----------------------------------------------- */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-nav:focus {
+  top: 0;
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* -----------------------------------------------
+   SCROLLBAR discrète
+----------------------------------------------- */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -51,4 +95,59 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #E5E7EB;
   border-radius: 2px;
+}
+
+/* -----------------------------------------------
+   IMPRESSION — styles pour window.print() certificat
+----------------------------------------------- */
+@media print {
+  /* Masquer tout sauf le certificat */
+  nav,
+  .print-hidden,
+  [aria-label="Navigation principale"],
+  [aria-label="Navigation mobile"],
+  [aria-label="Navigation recruteur"],
+  [aria-label="Navigation mobile recruteur"],
+  [aria-label="Navigation administration"],
+  [aria-label="Navigation mobile administration"] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Centrer le certificat sur la page */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Afficher le certificat seul, pleine page */
+  .certificat-card {
+    box-shadow: none !important;
+    border: 2px solid #E9A23B !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Mode impression CV — masquer tout sauf le CV */
+  body.printing-cv .no-cv-print {
+    display: none !important;
+  }
+
+  body.printing-cv .cv-print {
+    display: block !important;
+  }
+
+  body.printing-cv .cv-card {
+    box-shadow: none !important;
+    border: 1px solid #E5E7EB !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
 }

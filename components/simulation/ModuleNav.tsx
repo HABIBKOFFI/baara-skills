@@ -34,6 +34,8 @@ export default function ModuleNav({
             key={module.id}
             onClick={() => estDebloque && onSelectModule?.(module.id)}
             disabled={!estDebloque}
+            aria-current={estActuel ? 'step' : undefined}
+            aria-label={`${module.titre}${estComplete ? ' — complété' : !estDebloque ? ' — verrouillé' : ''}`}
             className={cn(
               'flex items-center gap-3 p-3 rounded-lg text-left transition-colors min-h-[44px]',
               estActuel && 'bg-[#1A2742] text-white',
@@ -41,7 +43,7 @@ export default function ModuleNav({
               !estDebloque && 'opacity-40 cursor-not-allowed text-[#6B7280]'
             )}
           >
-            <div className="shrink-0">
+            <div className="shrink-0" aria-hidden="true">
               {estComplete ? (
                 <CheckCircle size={18} className={estActuel ? 'text-[#E9A23B]' : 'text-[#10B981]'} />
               ) : estDebloque ? (

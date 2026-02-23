@@ -23,7 +23,11 @@ function ScoreBar({ label, score, poids }: ScoreBarProps) {
           {score}/100
         </span>
       </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div
+        className="h-2 bg-gray-100 rounded-full overflow-hidden"
+        role="img"
+        aria-label={`${label} : ${score} sur 100`}
+      >
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{
@@ -79,7 +83,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
       {/* Commentaire */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-[#E5E7EB]">
         <div className="flex items-center gap-2 mb-3">
-          <Star size={18} className="text-[#E9A23B]" />
+          <Star size={18} className="text-[#E9A23B]" aria-hidden="true" />
           <h3 className="font-semibold text-[18px]">Commentaire de l&apos;évaluateur</h3>
         </div>
         <p className="text-[#1A1A1A] text-sm leading-relaxed">
@@ -90,13 +94,13 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
       {/* Points forts */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-[#E5E7EB]">
         <div className="flex items-center gap-2 mb-3">
-          <CheckCircle size={18} className="text-[#10B981]" />
+          <CheckCircle size={18} className="text-[#10B981]" aria-hidden="true" />
           <h3 className="font-semibold text-[18px]">Points forts</h3>
         </div>
         <ul className="flex flex-col gap-2">
           {feedback.points_forts.map((point, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-[#1A1A1A]">
-              <span className="text-[#10B981] mt-0.5">✓</span>
+              <span className="text-[#10B981] mt-0.5" aria-hidden="true">✓</span>
               {point}
             </li>
           ))}
@@ -106,13 +110,13 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
       {/* Axes d'amélioration */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-[#E5E7EB]">
         <div className="flex items-center gap-2 mb-3">
-          <TrendingUp size={18} className="text-[#E9A23B]" />
+          <TrendingUp size={18} className="text-[#E9A23B]" aria-hidden="true" />
           <h3 className="font-semibold text-[18px]">Axes d&apos;amélioration</h3>
         </div>
         <ul className="flex flex-col gap-2">
           {feedback.axes_amelioration.map((axe, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-[#1A1A1A]">
-              <span className="text-[#E9A23B] mt-0.5">→</span>
+              <span className="text-[#E9A23B] mt-0.5" aria-hidden="true">→</span>
               {axe}
             </li>
           ))}

@@ -52,18 +52,18 @@ export default function ProfilCard({
       {/* Infos */}
       <div className="flex flex-col gap-2 mb-4">
         <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-          <MapPin size={14} className="shrink-0" />
+          <MapPin size={14} className="shrink-0" aria-hidden="true" />
           <span>{profile.ville || 'Abidjan'}</span>
         </div>
         {profile.niveau_etudes && (
           <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-            <GraduationCap size={14} className="shrink-0" />
+            <GraduationCap size={14} className="shrink-0" aria-hidden="true" />
             <span>{profile.niveau_etudes}</span>
           </div>
         )}
         {profile.domaine_etudes && (
           <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-            <BookOpen size={14} className="shrink-0" />
+            <BookOpen size={14} className="shrink-0" aria-hidden="true" />
             <span>{profile.domaine_etudes}</span>
           </div>
         )}
@@ -72,9 +72,10 @@ export default function ProfilCard({
             href={profile.linkedin_url}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Voir le profil LinkedIn (ouvre dans un nouvel onglet)"
             className="flex items-center gap-2 text-sm text-[#1A2742] hover:underline"
           >
-            <Linkedin size={14} className="shrink-0" />
+            <Linkedin size={14} className="shrink-0" aria-hidden="true" />
             <span className="truncate">LinkedIn</span>
           </a>
         )}
@@ -83,7 +84,7 @@ export default function ProfilCard({
       {/* Badge certificats */}
       {certificatsCount > 0 && (
         <div className="flex items-center gap-2 px-3 py-2 bg-[#F8F9FA] rounded-lg">
-          <Award size={16} className="text-[#E9A23B]" />
+          <Award size={16} className="text-[#E9A23B]" aria-hidden="true" />
           <span className="text-sm font-medium text-[#1A1A1A]">
             {certificatsCount} certificat{certificatsCount > 1 ? 's' : ''} obtenu
             {certificatsCount > 1 ? 's' : ''}

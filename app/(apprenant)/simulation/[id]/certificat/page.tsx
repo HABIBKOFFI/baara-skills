@@ -125,7 +125,7 @@ export default function CertificatPage() {
       </div>
 
       {/* Certificat visuel */}
-      <div className="bg-white rounded-2xl border-2 border-[#E9A23B] shadow-md p-6 mb-6 relative overflow-hidden">
+      <div className="certificat-card bg-white rounded-2xl border-2 border-[#E9A23B] shadow-md p-6 mb-6 relative overflow-hidden">
         {/* Décoration */}
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#1A2742] via-[#E9A23B] to-[#1A2742]" />
 
@@ -140,7 +140,7 @@ export default function CertificatPage() {
         {/* Icône award */}
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 rounded-full bg-[#E9A23B]/10 flex items-center justify-center">
-            <Award size={36} className="text-[#E9A23B]" />
+            <Award size={36} className="text-[#E9A23B]" aria-hidden="true" />
           </div>
         </div>
 
@@ -181,7 +181,7 @@ export default function CertificatPage() {
 
           {/* Checkmark */}
           <div className="flex items-center justify-center gap-1.5 text-[#10B981] text-sm font-medium">
-            <CheckCircle size={16} />
+            <CheckCircle size={16} aria-hidden="true" />
             Compétences certifiées BAARA
           </div>
         </div>
@@ -194,20 +194,24 @@ export default function CertificatPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col gap-3">
+      <div className="print-hidden flex flex-col gap-3">
         <button
           onClick={partager}
+          aria-label={copied ? 'Lien copié dans le presse-papier' : 'Partager mon certificat'}
           className="w-full flex items-center justify-center gap-2 bg-[#1A2742] text-white py-3.5 rounded-xl font-semibold min-h-[56px] hover:bg-[#1A2742]/90 transition-colors"
         >
-          <Share2 size={18} />
-          {copied ? 'Lien copié !' : 'Partager mon certificat'}
+          <Share2 size={18} aria-hidden="true" />
+          <span aria-live="polite" aria-atomic="true">
+            {copied ? 'Lien copié !' : 'Partager mon certificat'}
+          </span>
         </button>
 
         <button
           onClick={() => window.print()}
+          aria-label="Télécharger le certificat en PDF"
           className="w-full flex items-center justify-center gap-2 border border-[#E5E7EB] text-[#1A1A1A] py-3 rounded-xl font-medium text-sm min-h-[44px] hover:bg-gray-50 transition-colors"
         >
-          <Download size={16} />
+          <Download size={16} aria-hidden="true" />
           Télécharger (PDF)
         </button>
 

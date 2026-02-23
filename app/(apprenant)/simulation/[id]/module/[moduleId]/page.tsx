@@ -185,20 +185,23 @@ export default function ModulePage() {
           href={`/simulation/${simulationId}`}
           className="flex items-center gap-1 text-[#6B7280] text-sm hover:text-[#1A2742] transition-colors min-h-[44px]"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={16} aria-hidden="true" />
           Retour
         </Link>
         <button
           onClick={() => setShowNav(!showNav)}
+          aria-expanded={showNav}
+          aria-controls="module-nav-panel"
+          aria-label={showNav ? 'Fermer la navigation des modules' : 'Ouvrir la navigation des modules'}
           className="flex items-center gap-1 text-sm text-[#6B7280] min-h-[44px] px-2"
         >
-          {showNav ? <X size={20} /> : <Menu size={20} />}
+          {showNav ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
         </button>
       </div>
 
       {/* Navigation modules (mobile drawer) */}
       {showNav && modules.length > 0 && (
-        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-4 mb-5">
+        <div id="module-nav-panel" className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-4 mb-5">
           <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-3">
             Modules
           </p>
@@ -226,7 +229,7 @@ export default function ModulePage() {
       {/* Briefing */}
       <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-5 mb-5">
         <div className="flex items-center gap-2 mb-3">
-          <FileText size={18} className="text-[#1A2742]" />
+          <FileText size={18} className="text-[#1A2742]" aria-hidden="true" />
           <h2 className="font-semibold text-[18px] text-[#1A2742]">Briefing</h2>
         </div>
         <div className="text-[#1A1A1A] text-sm leading-relaxed whitespace-pre-wrap">
@@ -246,9 +249,10 @@ export default function ModulePage() {
                   href={r.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${r.titre} (ouvre dans un nouvel onglet)`}
                   className="flex items-center gap-2 text-sm text-[#1A2742] hover:underline"
                 >
-                  <ExternalLink size={14} />
+                  <ExternalLink size={14} aria-hidden="true" />
                   {r.titre}
                 </a>
               ))}
@@ -278,27 +282,30 @@ export default function ModulePage() {
 
       {/* Zone de rédaction */}
       <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-5 mb-4">
-        <h2 className="font-semibold text-[18px] text-[#1A2742] mb-1">
+        <h2 className="font-semibold text-[18px] text-[#1A2742] mb-1" id="livrable-label">
           Ton livrable
         </h2>
-        <p className="text-[#6B7280] text-xs mb-3">
+        <p id="livrable-hint" className="text-[#6B7280] text-xs mb-3">
           Rédige ta réponse complète ci-dessous. Minimum 50 caractères.
         </p>
         <textarea
+          id="livrable"
+          aria-labelledby="livrable-label"
+          aria-describedby="livrable-hint livrable-count"
           value={livrable}
           onChange={(e) => setLivrable(e.target.value)}
           placeholder="Commence à rédiger ton travail ici…"
           rows={10}
           className="w-full p-3 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] text-sm leading-relaxed resize-y"
         />
-        <p className="text-xs text-[#6B7280] mt-1.5 text-right">
+        <p id="livrable-count" className="text-xs text-[#6B7280] mt-1.5 text-right" aria-live="polite">
           {livrable.length} caractères
         </p>
       </div>
 
       {/* Erreur */}
       {error && (
-        <p className="text-sm text-[#EF4444] bg-red-50 px-3 py-2 rounded-lg mb-4">
+        <p role="alert" className="text-sm text-[#EF4444] bg-red-50 px-3 py-2 rounded-lg mb-4">
           {error}
         </p>
       )}
@@ -307,16 +314,18 @@ export default function ModulePage() {
       <button
         onClick={soumettrelivrable}
         disabled={submitting}
+        aria-busy={submitting}
+        aria-label={submitting ? 'Évaluation en cours, veuillez patienter' : 'Soumettre le livrable et obtenir le feedback IA'}
         className="w-full flex items-center justify-center gap-2 bg-[#E9A23B] text-white py-4 rounded-xl font-bold text-base min-h-[56px] hover:bg-[#E9A23B]/90 transition-colors disabled:opacity-60"
       >
         {submitting ? (
           <>
-            <Loader2 size={20} className="animate-spin" />
+            <Loader2 size={20} className="animate-spin" aria-hidden="true" />
             Évaluation en cours…
           </>
         ) : (
           <>
-            <Send size={20} />
+            <Send size={20} aria-hidden="true" />
             Soumettre et obtenir le feedback IA
           </>
         )}

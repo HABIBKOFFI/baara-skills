@@ -2,31 +2,35 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BookOpen, User, LogOut } from 'lucide-react'
+import { BookOpen, Users, BarChart3, UserCircle, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-interface NavLink {
-  href: string
-  label: string
-  icon: React.ReactNode
-}
-
-const apprenantLinks: NavLink[] = [
+const adminLinks = [
   {
-    href: '/catalogue',
+    href: '/admin/metriques',
+    label: 'Métriques',
+    icon: <BarChart3 size={20} aria-hidden="true" />,
+  },
+  {
+    href: '/admin/simulations',
     label: 'Simulations',
     icon: <BookOpen size={20} aria-hidden="true" />,
   },
   {
-    href: '/profil',
-    label: 'Mon profil',
-    icon: <User size={20} aria-hidden="true" />,
+    href: '/admin/utilisateurs',
+    label: 'Utilisateurs',
+    icon: <Users size={20} aria-hidden="true" />,
+  },
+  {
+    href: '/admin/profil',
+    label: 'Profil',
+    icon: <UserCircle size={20} aria-hidden="true" />,
   },
 ]
 
-export default function Navbar() {
+export default function NavAdmin() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -40,19 +44,19 @@ export default function Navbar() {
     <>
       {/* Desktop nav */}
       <nav
-        aria-label="Navigation principale"
+        aria-label="Navigation administration"
         className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-[#1A2742] text-white h-16 items-center px-6 shadow-md"
       >
         <Link
-          href="/catalogue"
-          aria-label="BAARA Skills — Accueil"
+          href="/admin/metriques"
+          aria-label="BAARA Administration — Accueil"
           className="flex items-center gap-2 mr-8"
         >
           <span className="text-[#E9A23B] font-bold text-xl" aria-hidden="true">BAARA</span>
-          <span className="text-white/80 text-sm font-medium" aria-hidden="true">Skills</span>
+          <span className="text-white/80 text-sm font-medium" aria-hidden="true">Admin</span>
         </Link>
         <div className="flex items-center gap-1 flex-1">
-          {apprenantLinks.map((link) => {
+          {adminLinks.map((link) => {
             const isActive = pathname.startsWith(link.href)
             return (
               <Link
@@ -84,10 +88,10 @@ export default function Navbar() {
 
       {/* Mobile bottom nav */}
       <nav
-        aria-label="Navigation mobile"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1A2742] border-t border-white/10 flex items-center justify-around px-4 pb-safe"
+        aria-label="Navigation mobile administration"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1A2742] border-t border-white/10 flex items-center justify-around px-1 pb-safe"
       >
-        {apprenantLinks.map((link) => {
+        {adminLinks.map((link) => {
           const isActive = pathname.startsWith(link.href)
           return (
             <Link
@@ -95,7 +99,7 @@ export default function Navbar() {
               href={link.href}
               aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'flex flex-col items-center gap-1 py-3 px-6 min-h-[60px] justify-center transition-colors',
+                'flex flex-col items-center gap-1 py-3 px-3 min-h-[60px] justify-center transition-colors',
                 isActive ? 'text-[#E9A23B]' : 'text-white/60'
               )}
             >
@@ -107,7 +111,7 @@ export default function Navbar() {
         <button
           onClick={handleLogout}
           aria-label="Se déconnecter de BAARA"
-          className="flex flex-col items-center gap-1 py-3 px-6 min-h-[60px] justify-center text-white/60"
+          className="flex flex-col items-center gap-1 py-3 px-3 min-h-[60px] justify-center text-white/60"
         >
           <LogOut size={20} aria-hidden="true" />
           <span className="text-xs font-medium">Déconnexion</span>

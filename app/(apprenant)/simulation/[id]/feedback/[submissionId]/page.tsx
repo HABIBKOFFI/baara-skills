@@ -88,7 +88,7 @@ export default function FeedbackPage() {
         href={`/simulation/${simulationId}`}
         className="inline-flex items-center gap-1 text-[#6B7280] text-sm mb-5 hover:text-[#1A2742] transition-colors min-h-[44px]"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={16} aria-hidden="true" />
         Simulation
       </Link>
 
@@ -112,7 +112,7 @@ export default function FeedbackPage() {
             href={`/simulation/${simulationId}/certificat`}
             className="w-full flex items-center justify-center gap-2 bg-[#10B981] text-white py-4 rounded-xl font-bold text-base min-h-[56px] hover:bg-[#10B981]/90 transition-colors"
           >
-            <Award size={20} />
+            <Award size={20} aria-hidden="true" />
             Obtenir mon certificat !
           </Link>
         ) : prochainModuleId ? (
@@ -121,7 +121,7 @@ export default function FeedbackPage() {
             className="w-full flex items-center justify-center gap-2 bg-[#E9A23B] text-white py-4 rounded-xl font-bold text-base min-h-[56px] hover:bg-[#E9A23B]/90 transition-colors"
           >
             Module suivant
-            <ChevronRight size={20} />
+            <ChevronRight size={20} aria-hidden="true" />
           </Link>
         ) : null}
 

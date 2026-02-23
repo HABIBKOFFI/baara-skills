@@ -41,21 +41,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 
-    // Générer le feedback via Claude (timeout 30s)
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 30000)
-
-    let feedbackIA
-    try {
-      feedbackIA = await genererFeedbackIA(
-        briefing,
-        livrable,
-        titreModule,
-        titreSimulation
+    // Générer le feedback via Claude (timeout 30s via Promise.race)
+    const feedbackPromise = genererFeedbackIA(briefing, livrable, titreModule, titreSimulation)
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("L'évaluation a pris trop de temps. Réessaie dans quelques instants.")),
+        30000
       )
-    } finally {
-      clearTimeout(timeout)
-    }
+    )
+
+    const feedbackIA = await Promise.race([feedbackPromise, timeoutPromise])
 
     // Sauvegarder le feedback en base
     const { data: feedback, error: fbError } = await supabase

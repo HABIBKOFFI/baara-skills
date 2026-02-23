@@ -19,9 +19,9 @@ export function middleware(request: NextRequest) {
   const publicPaths = ['/auth']
   const isPublic = publicPaths.some((p) => pathname.startsWith(p))
 
-  // Déjà connecté → rediriger depuis /auth vers le catalogue
+  // Déjà connecté → rediriger depuis /auth vers /dashboard (dispatch par rôle)
   if (isPublic && isAuthenticated) {
-    return NextResponse.redirect(new URL('/catalogue', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   // Non connecté → rediriger vers /auth
