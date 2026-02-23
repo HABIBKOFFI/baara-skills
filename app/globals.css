@@ -96,3 +96,58 @@ body {
   background: #E5E7EB;
   border-radius: 2px;
 }
+
+/* -----------------------------------------------
+   IMPRESSION — styles pour window.print() certificat
+----------------------------------------------- */
+@media print {
+  /* Masquer tout sauf le certificat */
+  nav,
+  .print-hidden,
+  [aria-label="Navigation principale"],
+  [aria-label="Navigation mobile"],
+  [aria-label="Navigation recruteur"],
+  [aria-label="Navigation mobile recruteur"],
+  [aria-label="Navigation administration"],
+  [aria-label="Navigation mobile administration"] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    font-family: 'IBM Plex Sans', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Centrer le certificat sur la page */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Afficher le certificat seul, pleine page */
+  .certificat-card {
+    box-shadow: none !important;
+    border: 2px solid #E9A23B !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Mode impression CV — masquer tout sauf le CV */
+  body.printing-cv .no-cv-print {
+    display: none !important;
+  }
+
+  body.printing-cv .cv-print {
+    display: block !important;
+  }
+
+  body.printing-cv .cv-card {
+    box-shadow: none !important;
+    border: 1px solid #E5E7EB !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
+}

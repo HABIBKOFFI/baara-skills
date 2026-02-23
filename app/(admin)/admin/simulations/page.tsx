@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Plus, Eye, EyeOff, Clock, Building2 } from 'lucide-react'
 import type { Simulation } from '@/types/simulation'
+import ToggleSimulationButton from './ToggleSimulationButton'
 
 const niveauColors: Record<string, string> = {
   Débutant: 'bg-green-50 text-green-700',
@@ -44,7 +45,7 @@ export default async function AdminSimulationsPage() {
           </p>
         </div>
         <button className="flex items-center gap-2 bg-[#E9A23B] text-white px-4 py-2.5 rounded-lg text-sm font-semibold min-h-[44px] hover:bg-[#E9A23B]/90 transition-colors">
-          <Plus size={18} />
+          <Plus size={18} aria-hidden="true" />
           Nouvelle simulation
         </button>
       </div>
@@ -66,12 +67,12 @@ export default async function AdminSimulationsPage() {
                     <h3 className="font-bold text-[#1A1A1A]">{sim.titre}</h3>
                     {sim.actif ? (
                       <span className="flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">
-                        <Eye size={10} />
+                        <Eye size={10} aria-hidden="true" />
                         Actif
                       </span>
                     ) : (
                       <span className="flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                        <EyeOff size={10} />
+                        <EyeOff size={10} aria-hidden="true" />
                         Inactif
                       </span>
                     )}
@@ -91,11 +92,11 @@ export default async function AdminSimulationsPage() {
 
               <div className="flex items-center gap-4 text-sm text-[#6B7280] mb-4 flex-wrap">
                 <span className="flex items-center gap-1">
-                  <Building2 size={14} />
+                  <Building2 size={14} aria-hidden="true" />
                   {sim.entreprise_partenaire}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Clock size={14} />
+                  <Clock size={14} aria-hidden="true" />
                   {sim.duree_heures}h
                 </span>
                 <span>{nbModules} module{nbModules !== 1 ? 's' : ''}</span>
@@ -117,22 +118,14 @@ export default async function AdminSimulationsPage() {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2 pt-3 border-t border-[#E5E7EB]">
+              <div className="flex gap-2 pt-3 border-t border-[#E5E7EB] flex-wrap">
                 <button className="text-xs text-[#1A2742] font-medium px-3 py-1.5 rounded-lg border border-[#E5E7EB] hover:bg-[#F8F9FA] transition-colors min-h-[36px]">
                   Modifier
                 </button>
                 <button className="text-xs text-[#1A2742] font-medium px-3 py-1.5 rounded-lg border border-[#E5E7EB] hover:bg-[#F8F9FA] transition-colors min-h-[36px]">
                   Voir les modules
                 </button>
-                <button
-                  className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors min-h-[36px] ${
-                    sim.actif
-                      ? 'text-red-600 border-red-200 hover:bg-red-50'
-                      : 'text-green-700 border-green-200 hover:bg-green-50'
-                  }`}
-                >
-                  {sim.actif ? 'Désactiver' : 'Activer'}
-                </button>
+                <ToggleSimulationButton simulationId={sim.id} actif={sim.actif} />
               </div>
             </div>
           )

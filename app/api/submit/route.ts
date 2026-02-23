@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient()
 
-    // Vérifier l'authentification
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Accès refusé.' }, { status: 403 })
     }
 
-    // Vérifier qu'une soumission n'existe pas déjà pour ce module/enrollment
+    // Vérifier qu'une soumission n'existe pas déjà pour ce module
     const { data: existante } = await supabase
       .from('submissions')
       .select('id, statut')
@@ -62,8 +61,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Si une soumission en_attente existe déjà pour ce module, la mettre à jour
-    // (ne compte pas comme une nouvelle soumission pour le rate limit)
+    // Mettre à jour si soumission en_attente (ne compte pas dans le rate limit)
     if (existante && existante.statut === 'en_attente') {
       const { data: submission, error: subError } = await supabase
         .from('submissions')
@@ -76,8 +74,25 @@ export async function POST(req: NextRequest) {
         .single()
 
       if (subError) throw subError
-
       return NextResponse.json({ success: true, submissionId: submission.id })
+    }
+
+    // Rate limiting — max 5 nouvelles soumissions par jour
+    const hier = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { count: nbAujourdhui } = await supabase
+      .from('submissions')
+      .select('*', { count: 'exact', head: true })
+      .eq('apprenant_id', user.id)
+      .gte('submitted_at', hier)
+
+    if ((nbAujourdhui || 0) >= 5) {
+      return NextResponse.json(
+        {
+          error:
+            'Limite journalière atteinte. Tu peux soumettre au maximum 5 livrables par jour. Reviens demain !',
+        },
+        { status: 429 }
+      )
     }
 
     // Créer la soumission
@@ -95,10 +110,7 @@ export async function POST(req: NextRequest) {
 
     if (subError) throw subError
 
-    return NextResponse.json({
-      success: true,
-      submissionId: submission.id,
-    })
+    return NextResponse.json({ success: true, submissionId: submission.id })
   } catch (err: unknown) {
     console.error('Erreur submit API:', err)
     return NextResponse.json(

@@ -10,8 +10,8 @@ export default function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+    <div role="alert" className="flex flex-col items-center justify-center py-16 px-4 text-center">
+      <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4" aria-hidden="true">
         <AlertCircle size={28} className="text-[#EF4444]" />
       </div>
       <p className="text-[#1A1A1A] font-semibold mb-1">Oops !</p>
@@ -21,7 +21,7 @@ export default function ErrorState({
           onClick={onRetry}
           className="flex items-center gap-2 bg-[#1A2742] text-white px-5 py-2.5 rounded-lg text-sm font-medium min-h-[44px] hover:bg-[#1A2742]/90 transition-colors"
         >
-          <RefreshCw size={16} />
+          <RefreshCw size={16} aria-hidden="true" />
           Réessayer
         </button>
       )}
