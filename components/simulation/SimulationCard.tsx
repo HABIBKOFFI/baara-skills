@@ -19,9 +19,16 @@ export default function SimulationCard({ simulation, enrollment }: SimulationCar
   const estComplete = enrollment?.statut === 'complete'
   const enCours = enrollment?.statut === 'en_cours'
 
+  const statutLabel = estComplete
+    ? ', terminée'
+    : enCours
+    ? ', en cours'
+    : ''
+
   return (
     <Link
       href={`/simulation/${simulation.id}`}
+      aria-label={`${simulation.titre} — ${simulation.entreprise_partenaire}, niveau ${simulation.niveau}, ${simulation.duree_heures}h${statutLabel}`}
       className="block bg-white rounded-xl p-4 shadow-sm border border-[#E5E7EB] hover:shadow-md transition-shadow"
     >
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -30,13 +37,13 @@ export default function SimulationCard({ simulation, enrollment }: SimulationCar
             {simulation.titre}
           </h3>
           <div className="flex items-center gap-1.5 text-[#6B7280] text-sm">
-            <Building2 size={14} />
+            <Building2 size={14} aria-hidden="true" />
             <span>{simulation.entreprise_partenaire}</span>
           </div>
         </div>
         {estComplete && (
-          <div className="shrink-0">
-            <CheckCircle size={22} className="text-[#10B981]" />
+          <div className="shrink-0" aria-label="Simulation terminée">
+            <CheckCircle size={22} className="text-[#10B981]" aria-hidden="true" />
           </div>
         )}
       </div>
@@ -56,8 +63,8 @@ export default function SimulationCard({ simulation, enrollment }: SimulationCar
             {simulation.niveau}
           </span>
           <span className="flex items-center gap-1 text-xs text-[#6B7280]">
-            <Clock size={12} />
-            {simulation.duree_heures}h
+            <Clock size={12} aria-hidden="true" />
+            <span>{simulation.duree_heures}h</span>
           </span>
           {enCours && (
             <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">
@@ -70,7 +77,7 @@ export default function SimulationCard({ simulation, enrollment }: SimulationCar
             </span>
           )}
         </div>
-        <ChevronRight size={18} className="text-[#6B7280]" />
+        <ChevronRight size={18} className="text-[#6B7280]" aria-hidden="true" />
       </div>
     </Link>
   )

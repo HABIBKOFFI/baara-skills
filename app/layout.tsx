@@ -22,7 +22,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body>
+        {/* Lien skip navigation — visible uniquement au focus clavier */}
+        <a href="#contenu-principal" className="skip-nav">
+          Aller au contenu principal
+        </a>
+        {children}
+      </body>
     </html>
   )
 }

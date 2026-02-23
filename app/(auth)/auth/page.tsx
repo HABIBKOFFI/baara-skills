@@ -88,6 +88,8 @@ export default function AuthPage() {
     }
   }
 
+  const formId = mode === 'recruteur' ? 'form-recruteur' : mode === 'inscription' ? 'form-inscription' : 'form-connexion'
+
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
@@ -103,9 +105,12 @@ export default function AuthPage() {
       {/* Card */}
       <div className="w-full max-w-sm bg-white rounded-xl shadow-sm border border-[#E5E7EB] p-6">
 
-        {/* Tabs apprenant */}
-        <div className="flex bg-[#F8F9FA] rounded-lg p-1 mb-4">
+        {/* Tabs apprenant — role="tablist" pour lecteurs d'écran */}
+        <div role="tablist" aria-label="Type de compte" className="flex bg-[#F8F9FA] rounded-lg p-1 mb-4">
           <button
+            role="tab"
+            aria-selected={mode === 'connexion'}
+            aria-controls={formId}
             onClick={() => switchMode('connexion')}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors min-h-[44px] ${
               mode === 'connexion'
@@ -116,6 +121,9 @@ export default function AuthPage() {
             Connexion
           </button>
           <button
+            role="tab"
+            aria-selected={mode === 'inscription'}
+            aria-controls={formId}
             onClick={() => switchMode('inscription')}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors min-h-[44px] ${
               mode === 'inscription'
@@ -129,72 +137,117 @@ export default function AuthPage() {
 
         {/* Bouton recruteur */}
         <button
+          type="button"
           onClick={() => switchMode('recruteur')}
+          aria-pressed={mode === 'recruteur'}
           className={`w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg border transition-colors min-h-[44px] mb-5 ${
             mode === 'recruteur'
               ? 'border-[#E9A23B] bg-orange-50 text-[#E9A23B]'
               : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E9A23B]/50 hover:text-[#E9A23B]'
           }`}
         >
-          <Briefcase size={16} />
+          <Briefcase size={16} aria-hidden="true" />
           {mode === 'recruteur' ? 'Inscription Recruteur' : 'Je suis recruteur / entreprise'}
         </button>
 
-        {/* Label contextuel */}
+        {/* Label contextuel recruteur */}
         {mode === 'recruteur' && (
           <p className="text-xs text-[#6B7280] bg-orange-50 border border-orange-100 rounded-lg px-3 py-2 mb-4">
-            Créez un compte recruteur pour accéder aux profils certifiés de nos apprenants.
+            Créez un compte pour accéder aux profils certifiés de nos apprenants.
           </p>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form
+          id={formId}
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+          aria-label={
+            mode === 'connexion'
+              ? 'Formulaire de connexion'
+              : mode === 'recruteur'
+              ? 'Formulaire d\'inscription recruteur'
+              : 'Formulaire d\'inscription apprenant'
+          }
+          noValidate
+        >
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
+            <label
+              htmlFor="auth-email"
+              className="block text-sm font-medium text-[#1A1A1A] mb-1.5"
+            >
               Adresse email
             </label>
             <input
+              id="auth-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ton@email.com"
               required
+              autoComplete="email"
+              aria-required="true"
               className="w-full px-3 py-2.5 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] min-h-[44px] text-base"
             />
           </div>
 
           {/* Mot de passe */}
           <div>
-            <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
+            <label
+              htmlFor="auth-password"
+              className="block text-sm font-medium text-[#1A1A1A] mb-1.5"
+            >
               Mot de passe
+              {mode !== 'connexion' && (
+                <span className="text-[#6B7280] font-normal ml-1">(6 caractères minimum)</span>
+              )}
             </label>
             <div className="relative">
               <input
+                id="auth-password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={mode !== 'connexion' ? 'Minimum 6 caractères' : '••••••••'}
+                placeholder="••••••••"
                 required
-                className="w-full px-3 py-2.5 pr-10 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] min-h-[44px] text-base"
+                autoComplete={mode === 'connexion' ? 'current-password' : 'new-password'}
+                aria-required="true"
+                minLength={mode !== 'connexion' ? 6 : undefined}
+                className="w-full px-3 py-2.5 pr-12 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] min-h-[44px] text-base"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280]"
+                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-pressed={showPassword}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#1A1A1A] min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword
+                  ? <EyeOff size={18} aria-hidden="true" />
+                  : <Eye size={18} aria-hidden="true" />
+                }
               </button>
             </div>
           </div>
 
-          {/* Messages */}
+          {/* Erreur — role="alert" pour annonce immédiate aux lecteurs d'écran */}
           {error && (
-            <p className="text-sm text-[#EF4444] bg-red-50 px-3 py-2 rounded-lg">
+            <p
+              role="alert"
+              aria-live="assertive"
+              className="text-sm text-[#EF4444] bg-red-50 px-3 py-2 rounded-lg"
+            >
               {error}
             </p>
           )}
+
+          {/* Succès — role="status" pour annonce non-urgente */}
           {success && (
-            <p className="text-sm text-[#10B981] bg-green-50 px-3 py-2 rounded-lg">
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-sm text-[#10B981] bg-green-50 px-3 py-2 rounded-lg"
+            >
               {success}
             </p>
           )}
@@ -203,14 +256,17 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             className={`w-full py-3 rounded-lg font-semibold min-h-[44px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2 text-white ${
               mode === 'recruteur'
                 ? 'bg-[#E9A23B] hover:bg-[#E9A23B]/90'
                 : 'bg-[#1A2742] hover:bg-[#1A2742]/90'
             }`}
           >
-            {loading && <Loader2 size={18} className="animate-spin" />}
-            {mode === 'connexion'
+            {loading && <Loader2 size={18} className="animate-spin" aria-hidden="true" />}
+            {loading
+              ? 'Chargement…'
+              : mode === 'connexion'
               ? 'Se connecter'
               : mode === 'recruteur'
               ? 'Créer mon compte recruteur'

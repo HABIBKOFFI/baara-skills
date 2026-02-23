@@ -24,10 +24,9 @@ export default async function ApprenantLayout({
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       <Navbar />
-      {/* Espace pour nav desktop */}
-      <div className="md:pt-16 pb-20 md:pb-0">
+      <main id="contenu-principal" className="md:pt-16 pb-20 md:pb-0">
         {children}
-      </div>
+      </main>
     </div>
   )
 }
