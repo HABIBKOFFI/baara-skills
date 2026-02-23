@@ -44,49 +44,31 @@ export default function AuthPage() {
           'Compte créé ! Vérifie ta boîte email pour confirmer ton inscription.'
         )
       } else if (mode === 'recruteur') {
-        // Inscription recruteur — rôle fixé à 'recruteur', pas d'onboarding apprenant
-        const { data, error } = await supabase.auth.signUp({
+        // Inscription recruteur — le rôle est passé en métadonnées
+        // Le trigger Supabase handle_new_user() lit raw_user_meta_data->>'role'
+        // et crée le profil avec role='recruteur' automatiquement
+        const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: { role: 'recruteur' },
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+          },
         })
         if (error) throw error
-        if (data.user) {
-          // Créer le profil avec rôle recruteur immédiatement
-          await supabase.from('profiles').upsert({
-            id: data.user.id,
-            role: 'recruteur',
-            prenom: '',
-            nom: '',
-            ville: 'Abidjan',
-          })
-        }
         setSuccess(
           'Compte recruteur créé ! Vérifie ta boîte email puis connecte-toi.'
         )
       } else {
         // Connexion
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
         if (error) throw error
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('prenom, role')
-          .eq('id', data.user.id)
-          .single()
-
-        // Priorité : rôle d'abord, puis état de l'onboarding
-        if (profile?.role === 'admin') {
-          router.push('/admin/metriques')
-        } else if (profile?.role === 'recruteur') {
-          router.push('/recruteur/dashboard')
-        } else if (!profile?.prenom) {
-          router.push('/onboarding')
-        } else {
-          router.push('/catalogue')
-        }
+        // Laisser /dashboard faire le dispatch par rôle (lecture serveur)
+        router.push('/dashboard')
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Une erreur est survenue'

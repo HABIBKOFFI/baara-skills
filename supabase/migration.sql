@@ -109,7 +109,15 @@ SECURITY DEFINER SET search_path = public
 AS $$
 BEGIN
   INSERT INTO public.profiles (id, role)
-  VALUES (NEW.id, 'apprenant')
+  VALUES (
+    NEW.id,
+    -- Lire le rôle depuis les métadonnées si défini (recruteur, admin), sinon 'apprenant'
+    CASE
+      WHEN NEW.raw_user_meta_data->>'role' IN ('recruteur', 'admin')
+      THEN NEW.raw_user_meta_data->>'role'
+      ELSE 'apprenant'
+    END
+  )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
