@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Briefcase } from 'lucide-react'
 
-type Mode = 'connexion' | 'inscription'
+type Mode = 'connexion' | 'inscription' | 'recruteur'
 
 export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('connexion')
@@ -17,6 +17,12 @@ export default function AuthPage() {
   const [success, setSuccess] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  function switchMode(m: Mode) {
+    setMode(m)
+    setError(null)
+    setSuccess(null)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,26 +43,47 @@ export default function AuthPage() {
         setSuccess(
           'Compte créé ! Vérifie ta boîte email pour confirmer ton inscription.'
         )
+      } else if (mode === 'recruteur') {
+        // Inscription recruteur — rôle fixé à 'recruteur', pas d'onboarding apprenant
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+        })
+        if (error) throw error
+        if (data.user) {
+          // Créer le profil avec rôle recruteur immédiatement
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            role: 'recruteur',
+            prenom: '',
+            nom: '',
+            ville: 'Abidjan',
+          })
+        }
+        setSuccess(
+          'Compte recruteur créé ! Vérifie ta boîte email puis connecte-toi.'
+        )
       } else {
+        // Connexion
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
         if (error) throw error
 
-        // Vérifier le profil pour rediriger selon le rôle
         const { data: profile } = await supabase
           .from('profiles')
           .select('prenom, role')
           .eq('id', data.user.id)
           .single()
 
-        if (!profile?.prenom) {
-          router.push('/onboarding')
-        } else if (profile.role === 'recruteur') {
-          router.push('/recruteur/dashboard')
-        } else if (profile.role === 'admin') {
+        // Priorité : rôle d'abord, puis état de l'onboarding
+        if (profile?.role === 'admin') {
           router.push('/admin/metriques')
+        } else if (profile?.role === 'recruteur') {
+          router.push('/recruteur/dashboard')
+        } else if (!profile?.prenom) {
+          router.push('/onboarding')
         } else {
           router.push('/catalogue')
         }
@@ -69,6 +96,8 @@ export default function AuthPage() {
         setError('Confirme ton email avant de te connecter.')
       } else if (message.includes('Password should be')) {
         setError('Le mot de passe doit contenir au moins 6 caractères.')
+      } else if (message.includes('already registered')) {
+        setError('Un compte existe déjà avec cet email.')
       } else {
         setError(message)
       }
@@ -91,10 +120,11 @@ export default function AuthPage() {
 
       {/* Card */}
       <div className="w-full max-w-sm bg-white rounded-xl shadow-sm border border-[#E5E7EB] p-6">
-        {/* Tabs */}
-        <div className="flex bg-[#F8F9FA] rounded-lg p-1 mb-6">
+
+        {/* Tabs apprenant */}
+        <div className="flex bg-[#F8F9FA] rounded-lg p-1 mb-4">
           <button
-            onClick={() => { setMode('connexion'); setError(null) }}
+            onClick={() => switchMode('connexion')}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors min-h-[44px] ${
               mode === 'connexion'
                 ? 'bg-white text-[#1A2742] shadow-sm'
@@ -104,7 +134,7 @@ export default function AuthPage() {
             Connexion
           </button>
           <button
-            onClick={() => { setMode('inscription'); setError(null) }}
+            onClick={() => switchMode('inscription')}
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors min-h-[44px] ${
               mode === 'inscription'
                 ? 'bg-white text-[#1A2742] shadow-sm'
@@ -114,6 +144,26 @@ export default function AuthPage() {
             Inscription
           </button>
         </div>
+
+        {/* Bouton recruteur */}
+        <button
+          onClick={() => switchMode('recruteur')}
+          className={`w-full flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg border transition-colors min-h-[44px] mb-5 ${
+            mode === 'recruteur'
+              ? 'border-[#E9A23B] bg-orange-50 text-[#E9A23B]'
+              : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#E9A23B]/50 hover:text-[#E9A23B]'
+          }`}
+        >
+          <Briefcase size={16} />
+          {mode === 'recruteur' ? 'Inscription Recruteur' : 'Je suis recruteur / entreprise'}
+        </button>
+
+        {/* Label contextuel */}
+        {mode === 'recruteur' && (
+          <p className="text-xs text-[#6B7280] bg-orange-50 border border-orange-100 rounded-lg px-3 py-2 mb-4">
+            Créez un compte recruteur pour accéder aux profils certifiés de nos apprenants.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Email */}
@@ -141,7 +191,7 @@ export default function AuthPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={mode === 'inscription' ? 'Minimum 6 caractères' : '••••••••'}
+                placeholder={mode !== 'connexion' ? 'Minimum 6 caractères' : '••••••••'}
                 required
                 className="w-full px-3 py-2.5 pr-10 border border-[#E5E7EB] rounded-lg text-[#1A1A1A] placeholder:text-[#6B7280] focus:outline-none focus:ring-2 focus:ring-[#1A2742] min-h-[44px] text-base"
               />
@@ -171,10 +221,18 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#1A2742] text-white py-3 rounded-lg font-semibold min-h-[44px] hover:bg-[#1A2742]/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+            className={`w-full py-3 rounded-lg font-semibold min-h-[44px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2 text-white ${
+              mode === 'recruteur'
+                ? 'bg-[#E9A23B] hover:bg-[#E9A23B]/90'
+                : 'bg-[#1A2742] hover:bg-[#1A2742]/90'
+            }`}
           >
             {loading && <Loader2 size={18} className="animate-spin" />}
-            {mode === 'connexion' ? 'Se connecter' : 'Créer mon compte'}
+            {mode === 'connexion'
+              ? 'Se connecter'
+              : mode === 'recruteur'
+              ? 'Créer mon compte recruteur'
+              : 'Créer mon compte'}
           </button>
         </form>
       </div>
